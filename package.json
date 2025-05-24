@@ -1,0 +1,19 @@
+{
+  "type": "module",
+  "name": "vitepress-plugin-reading-time",
+  "version": "1.0.0",
+  "description": "VitePress plugin for reading time",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.12",
+    "fast-glob": "^3.3.3",
+    "vitepress": "^1.6.3"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3"
+  }
+}

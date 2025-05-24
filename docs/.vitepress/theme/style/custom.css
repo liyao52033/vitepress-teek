@@ -1,0 +1,16 @@
+.VPSidebar .nav .item h2.text {
+  font-weight: bold;
+  font-size: 1.45em;
+  color: #3f34b2; 
+}
+
+.VPSidebar .nav .items p.text {
+  font-size: 1rem;
+}
+
+.VPSidebar .nav .items p.text.active {
+  color: #646cff;
+}
+
+
+
