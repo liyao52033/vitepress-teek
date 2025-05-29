@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
-import { genRewritesPlugin } from './gen-rewrites-plugin'
-import { genFullSidebar } from './gen-sidebar-plugin'
-import rewritesJson from './rewrites.json'
+import rewritesJson from '../rewrites.json'
+import { SidebarPermalinkPlugin } from 'vitepress-plugin-sidebar-permalink'
+import { genSidebar } from 'vitepress-plugin-sidebar-permalink/sidebar'
 
 const navLinks = [
   { text: '组件', link: '/pages/fe4521' },
@@ -11,8 +11,7 @@ const navLinks = [
 
 // 设置侧边栏是否默认折叠
 const sidebarOptions = { collapsed: true }
-
-const sidebar = genFullSidebar(rewritesJson.rewrites, 'docs/articles', navLinks, sidebarOptions)
+const sidebar = genSidebar(navLinks, 'docs/articles', rewritesJson.rewrites, sidebarOptions)
 
 export default defineConfig({
   title: "permalink test",
@@ -23,16 +22,16 @@ export default defineConfig({
   },
   vite: {
     plugins: [
-      genRewritesPlugin()
+      SidebarPermalinkPlugin()
     ]
   },
   rewrites: rewritesJson.rewrites,
   themeConfig: {
     nav: navLinks,
+    sidebar,
     socialLinks: [
       { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
     ],
-    sidebar
   }
 })
 

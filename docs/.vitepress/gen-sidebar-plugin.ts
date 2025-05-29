@@ -10,50 +10,6 @@ interface SidebarItem {
     activeMatch?: string 
 }
 
-interface RewritesJson {
-    rewrites: Record<string, string>
-}
-
-function getPermalink(filePath: string, rewrites: Record<string, string>): string {
-    const rel = path.relative(path.resolve(__dirname, '../'), filePath).replace(/\\/g, '/').replace(/\.md$/, '')
-    // 优先使用rewrites中的permalink（去掉 .md 后缀）
-    return (rewrites[rel + '.md'] || rewrites[rel] || '/' + rel)
-}
-
-// 生成所有 rewrites 的 sidebar key，全部指向对应一级目录的 sidebar
-export function genFullSidebar(rewrites, root, navLinks, options = { collapsed: true }) {
-    const sidebar = {}
-    const dirSidebarCache = {}
-    for (const nav of navLinks) {
-        let navPermalink = nav.link.replace(/^\//, '').replace(/\/$/, '').replace(/\.md$/, '')
-        const matchedKeys = Object.entries(rewrites)
-            .filter(([, v]) => typeof v === 'string' && v.replace(/^\//, '').replace(/\.md$/, '') === navPermalink)
-            .map(([k]) => k)
-        if (matchedKeys.length) {
-            const mdPath = matchedKeys.reduce((a, b) => a.length > b.length ? a : b)
-            let dirPath = path.dirname(mdPath)
-            dirPath = dirPath.replace(/^articles[\\\/]/, '')
-            const firstLevel = dirPath.split('/')[0]
-            const absDir = path.join(root, firstLevel)
-            if (fs.existsSync(absDir) && fs.statSync(absDir).isDirectory()) {
-                // 传递 nav.link 作为 sidebarKey
-                dirSidebarCache[firstLevel] = itemsWithStyle(absDir, rewrites, options, nav.link)
-            }
-        }
-    }
-    // 为 rewrites 的每个 permalink 生成 sidebar key，指向对应一级目录 sidebar
-    for (const [mdPath, permalink] of Object.entries(rewrites)) {
-        const cleanPermalink = (typeof permalink === 'string' ? (permalink.startsWith('/') ? permalink : '/' + permalink) : '')
-            .replace(/\.md$/, '')
-        const firstLevel = mdPath.replace(/^articles[\\\/]/, '').split('/')[0]
-        if (dirSidebarCache[firstLevel]) {
-            sidebar[cleanPermalink] = dirSidebarCache[firstLevel]
-            sidebar[cleanPermalink + '/'] = dirSidebarCache[firstLevel]
-        }
-    }
-    return sidebar
-}
-
 export function itemsWithStyle(dir: string, rewrites: Record<string, string>, options: { collapsed: boolean } = { collapsed: true }, sidebarKey?: string): SidebarItem[] {
     const entries = fs.readdirSync(dir, { withFileTypes: true })
     let items: SidebarItem[] = []
@@ -114,45 +70,6 @@ export function itemsWithStyle(dir: string, rewrites: Record<string, string>, op
     return items
 }
 
-export function genSidebarMap(navLinks: { text: string, link: string }[], root: string, rewrites: Record<string, string>): Record<string, SidebarItem[]> {
-    const sidebar: Record<string, SidebarItem[]> = {}
-    for (const nav of navLinks) {
-        // 直接用 nav.link 作为 key
-        const sidebarKey = nav.link.endsWith('/') ? nav.link : nav.link + '/'
-        // 通过 rewrites 反查出 articles 下的一级目录名
-        const mdEntry = Object.entries(rewrites).find(([, v]) => {
-            const cleanPermalink = v.replace(/\/+$/, '').replace(/\.md$/, '')
-            const cleanNav = nav.link.replace(/\/+$/, '').replace(/\.md$/, '')
-            return cleanPermalink === cleanNav
-        })
-        if (mdEntry) {
-            const mdPath = mdEntry[0]
-            const match = mdPath.match(/^([^/]+)\//)
-            if (match) {
-                const dirName = match[1]
-                const absDir = path.join(root, dirName)
-                if (fs.existsSync(absDir) && fs.statSync(absDir).isDirectory()) {
-                    sidebar[sidebarKey] = [
-                        {
-                            text: nav.text,
-                            items: itemsWithStyle(absDir, rewrites)
-                        }
-                    ]
-                }
-            }
-        } else {
-            // fallback: 如果没找到，直接扫描 root
-            sidebar[sidebarKey] = [
-                {
-                    text: nav.text,
-                    items: itemsWithStyle(root, rewrites)
-                }
-            ]
-        }
-    }
-    return sidebar
-}
-
 // navLinks: [{ text, link }...], sidebarKey 与 nav.link 一致，内容为 articles 下的一级目录
 export function genSidebarByNavPermalink(navLinks: { text: string, link: string }[], root: string, rewrites: Record<string, string>, options = { collapsed: true }): Record<string, SidebarItem[]> {
     const sidebar: Record<string, SidebarItem[]> = {}
@@ -164,8 +81,6 @@ export function genSidebarByNavPermalink(navLinks: { text: string, link: string 
         const matchedKeys = Object.entries(rewrites)
             .filter(([, v]) => v.replace(/^\//, '').replace(/\.md$/, '') === navPermalink)
             .map(([k]) => k)
-        // debug
-        console.log('navPermalink:', navPermalink, 'matchedKeys:', matchedKeys)
         if (matchedKeys.length) {
             // 取路径最长的 key
             const mdPath = matchedKeys.reduce((a, b) => a.length > b.length ? a : b)
@@ -203,32 +118,6 @@ export function genSidebarByNavPermalink(navLinks: { text: string, link: string 
         }
     }
     return sidebar
-}
-
-export function genSidebarPlugin(options: { root: string; rewrites: RewritesJson; navLinks: { text: string, link: string }[]; collapsed?: boolean }) {
-    const sidebarOptions = { collapsed: options.collapsed !== undefined ? options.collapsed : true }
-
-    return {
-        name: 'gen-sidebar-plugin',
-        configResolved(resolvedConfig: any) {
-            // resolvedConfig.themeConfig 是最终的 themeConfig
-            const sidebar = genSidebarByNavPermalink(options.navLinks, options.root, options.rewrites.rewrites, sidebarOptions)
-            resolvedConfig.themeConfig.sidebar = sidebar
-        },
-        config(userConfig: any, { command }: any) {
-            if (command === 'build' || command === 'serve') {
-                // 这里返回的 themeConfig 只是合并建议，实际生效要靠 configResolved
-                const sidebar = genSidebarByNavPermalink(options.navLinks, options.root, options.rewrites.rewrites, sidebarOptions)
-                return {
-                    ...userConfig,
-                    themeConfig: {
-                        ...userConfig.themeConfig,
-                        sidebar
-                    }
-                }
-            }
-        }
-    }
 }
 
 export type { SidebarItem }
