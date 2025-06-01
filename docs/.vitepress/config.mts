@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { nav } from "./theme/config/nav"
 import tkThemeConfig from "./theme/config/index";
-import { SidebarPermalinkPlugin } from 'vitepress-plugin-sidebar-permalink'
+import SidebarPermalinkPlugin from 'vitepress-plugin-sidebar-permalink'
 import { genSidebar } from 'vitepress-plugin-sidebar-permalink/sidebar'
 import rewritesJson from '../rewrites.json'  //插件自动生成
 
@@ -19,11 +19,9 @@ const tkConfig = tkThemeConfig({
             globOptions: { ignore: ["utils", "index.md", "login.md", "pages"] }
         },
         catalogueOption:{
-            path: "docs",
             ignoreList: ["pages"]
         },
         docAnalysisOption:{
-            path: "docs",
             ignoreList: ["login.md", "pages"]
         }
     }
@@ -104,9 +102,9 @@ export default defineConfig({
             prev: "上一页",
             next: "下一页",
         },
-        socialLinks: [
-            { icon: 'github', link: 'https://github.com/liyao52033/liyao-vue-common' }
-        ],
+        // socialLinks: [
+        //     { icon: 'github', link: 'https://github.com/liyao52033/liyao-vue-common' }
+        // ],
         lastUpdated: {
             text: '上次更新时间',
             formatOptions: {

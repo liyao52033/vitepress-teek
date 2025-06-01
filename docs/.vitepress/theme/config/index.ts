@@ -10,7 +10,7 @@ import { transformData, transformRaw } from "../post";
 import { Post, TkContentData } from "../post/types";
 import { codeArrowPlugin, imgCardPlugin, navCardPlugin, todoPlugin, shareCardPlugin } from "../markdown";
 import { containerPlugins, createContainersThenUse } from "../markdown/plugins/container";
-import { createCategory, createConst, createPermalink } from "../utils/addFrontmatter";
+import { createAuthor, createCategory, createCoverImg, createPermalink } from "../utils/addFrontmatter";
 
 export default function tkThemeConfig(config: TkThemeConfig = { tkTheme: true }): UserConfig {
   const { vitePlugins, markdownPlugins = [], markdownContainers = [], containerLabel, ...tkThemeConfig } = config;
@@ -63,8 +63,12 @@ export default function tkThemeConfig(config: TkThemeConfig = { tkTheme: true })
         transformResult = { ...transformResult, ...createPermalink(permalinkPrefix) };
       }
 
+      if ( !frontmatter.author ) {
+        transformResult = { ...transformResult, ...createAuthor() };
+      }
+
       if ( !frontmatter.coverImg && coverImg ) {
-        transformResult = { ...transformResult, ...createConst() };
+        transformResult = { ...transformResult, ...createCoverImg() };
       }
 
       if (categories && !frontmatter.categories) {

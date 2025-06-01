@@ -11,12 +11,29 @@ import {
 } from "./helper";
 import { formatDate } from "../helper/date";
 import matter from "gray-matter";
-import { getTitleFromMd } from "vitepress-plugin-sidebar-depth";
 import type { FileContentLoaderData } from "vitepress-plugin-file-content-loader";
 import { basename, join } from "node:path";
 import { statSync } from "node:fs";
 
 // ！该文件只在 node 环境运行，无法直接在浏览器环境运行，因此浏览器环境的代码不要引入该文件
+
+/**
+ * 从 md 文件中读取一级标题
+ * @param mdContent md 文件内容
+ */
+const getTitleFromMd = (mdContent: string) => {
+  // 切割换行符 \r\n 或 \n
+  const lines = mdContent.trimStart().split(/\r?\n/);
+
+  for (const line of lines) {
+    if (line.startsWith("# ")) {
+      return line.substring(2).trim();
+    }
+  }
+
+  return undefined;
+};
+
 
 /**
  * 转换为文章数据

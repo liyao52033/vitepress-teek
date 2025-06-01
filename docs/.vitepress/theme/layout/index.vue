@@ -55,7 +55,7 @@ import NotFound from "../components/common/NotFound.vue";
 import GlobalTip from "../components/common/GlobalTip.vue";
 import pageInfo from "../components/ArticleInfo/pageInfo.vue"
 import BackTop from '../components/common/BackTop.vue';
-import usePermalink from "vitepress-plugin-link/usePermalink";
+
 import {
   Footer,
   HomePostList,
@@ -68,10 +68,6 @@ import ContributeChart from "../components/common/ContributeChart.vue";
 
 
 const { Layout } = DefaultTheme
-
-usePermalink().startWatch();
-
-
 
 </script>
 

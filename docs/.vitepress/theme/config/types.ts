@@ -1,7 +1,6 @@
 import type { CatalogueOption } from "vitepress-plugin-catalogue";
 import type { DocAnalysisOption } from "vitepress-plugin-doc-analysis";
-// @ts-ignore
-import type { AutoFrontmatterOption } from "vitepress-plugin-auto-frontmatter";
+import type { AutoFrontmatterOption } from "vitepress-plugin-setfrontmatter";
 import type { ImageViewerProps, PaginationProps } from "element-plus";
 import type { ContainerLabel, ContainerOption } from "../markdown/plugins/container";
 import type { Ref } from "vue";

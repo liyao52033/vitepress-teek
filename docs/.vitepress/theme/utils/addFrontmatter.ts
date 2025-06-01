@@ -12,8 +12,7 @@ export const createPermalink = (permalinkPrefix = "") => {
   if(!finalPermalinkPrefix.endsWith("/")){finalPermalinkPrefix = finalPermalinkPrefix + "/"}
 
   return {
-    permalink: `${finalPermalinkPrefix}${(Math.random() + Math.random()).toString(16).slice(2, 8)}`,
-    author:{ name: "华总", link: "'https://xiaoying.org.cn'" }
+    permalink: `${finalPermalinkPrefix}${(Math.random() + Math.random()).toString(16).slice(2, 8)}`
   };
 };
 
@@ -23,12 +22,23 @@ export const createPermalink = (permalinkPrefix = "") => {
  * 此函数无需任何参数，它负责生成一个具有固定结构和值的对象
  * 主要用于提供配置信息，如作者信息和封面图片链接
  *
- * @returns {Object} 包含常量信息的对象，包括作者信息和封面图片链接
+ * @returns 包含常量信息的对象，包括作者信息和封面图片链接
  */
-export const createConst = () => {
+export const createCoverImg = () => {
   return {
     // 封面图片链接，指向一个随机图片生成网址
     coverImg: "https://www.dmoe.cc/random.php",
+  };
+}
+
+/**
+ * 返回作者信息
+ *
+ * @returns 作者对象，包含名称和链接
+ */
+export const createAuthor = () => {
+  return {
+    author:{ name: "华总", link: "'https://xiaoying.org.cn'" }
   };
 }
 

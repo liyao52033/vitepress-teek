@@ -16,6 +16,20 @@ export const nav: DefaultTheme.Config["nav"]  = [
 	{
 		"text": "资源",
 		"link": "/pages/87a36a",
+	},
+	{
+
+		"text": "Github",
+		"items": [
+			{
+				"items": [
+					{ "text": "本站仓库", "link": "https://github.com/liyao52033/vitepress-teek" },
+					{ "text": "前端组件仓库", "link": "https://github.com/liyao52033/liyao-vue-common" },
+					{ "text": "官方文档", "link": "https://vp.teek.top/" }
+				],
+			},
+
+		]
 	}
 
 ]

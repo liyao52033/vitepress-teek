@@ -43,7 +43,7 @@ const route = useRoute();
 const pageViewInfo = computed(() => {
   let pageViewInfo: Partial<FileInfo> = {};
   unref(docAnalysisInfo).eachFileWords.forEach((item: FileInfo) => {
-    if (item.fileInfo.relativePath === route.data.relativePath) return (pageViewInfo = item);
+    if (item.fileInfo.relativePath === route.data.filePath) return (pageViewInfo = item);
   });
 
   return pageViewInfo;
@@ -55,8 +55,7 @@ const { showInfo = true, teleport = {} }: Article = { ...theme.article, ...front
 // 是否展示作者、日期、分类、标签等信息
 const isShowInfo = computed(() => {
   const arr = [showInfo].flat();
-  if (arr.includes(true) || arr.includes("article")) return true;
-  return false;
+  return !!(arr.includes(true) || arr.includes("article"));
 });
 
 const baseInfoRef = ref<HTMLDivElement>();
