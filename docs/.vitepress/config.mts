@@ -43,8 +43,8 @@ export default defineConfig({
         [
             "meta",
             {
-                httpEquiv: "Content-Language",
-                content: "zh-CN",
+                name: "google",
+                content: "notranslate",
             },
         ],
     ],
