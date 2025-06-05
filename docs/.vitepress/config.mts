@@ -1,10 +1,10 @@
 import { defineConfig } from 'vitepress'
-import { toSidebarNavItems, nav } from "./theme/config/nav";
+import { nav, toSidebarNavItems } from "./theme/config/nav";
 import tkThemeConfig from "./theme/config/index";
 import secureInfo from '../secureInfo'
 import SidebarPermalinkPlugin from 'vitepress-plugin-sidebar-permalink'
 import { genSidebar } from 'vitepress-plugin-sidebar-permalink/sidebar'
-import rewritesJson from '../rewrites.json'  //插件自动生成
+import rewritesJson from '../rewrites.json' //插件自动生成
 
 // 生成侧边栏
 const sidebarOptions = { collapsed: true }
@@ -78,7 +78,7 @@ export default defineConfig({
     cacheDir: '.vite-cache',
     metaChunk: true,
     sitemap: {
-        hostname: 'https://vitepress.xiaoying.org.cn/'
+        hostname: 'https://vp.xiaoying.org.cn/'
     },
     themeConfig: ({
         logo: '/img/logo.png',

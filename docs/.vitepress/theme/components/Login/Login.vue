@@ -1,10 +1,10 @@
-<script setup lang="ts" name="LoginPage">
+<script setup lang="ts">
 import type { LoginForm } from "./helper";
 import { STORAGE_KEY } from "./helper";
-import { ref, onMounted, markRaw, reactive } from "vue";
+import { markRaw, onMounted, reactive, ref } from "vue";
 import { useData, useRouter } from "vitepress";
 import { useNamespace } from "../../hooks";
-import { userIcon, lockIcon, successFilledIcon, warningFilledIcon } from "../static";
+import { lockIcon, successFilledIcon, userIcon, warningFilledIcon } from "../static";
 import { Icon } from "../Icon";
 import TkVerifyCode from "../VerifyCode/index.vue";
 import { ElMessage } from "element-plus";
@@ -134,9 +134,8 @@ function login() {
             accesskey: token
         })
         window.localStorage.setItem(STORAGE_KEY, data)
-        router.go(redirect).then(() => {
-            ElMessage.success({ message: "登录成功", plain: true });
-        });
+        router.go(redirect)
+        ElMessage.success({ message: "登录成功" });
     } else {
         ElMessage.error('账号或密码错误!')
     }
