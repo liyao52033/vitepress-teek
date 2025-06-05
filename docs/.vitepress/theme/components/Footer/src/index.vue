@@ -7,7 +7,6 @@ import copyrightSvg from "../../../assets/svg/copyright";
 import icpRecordSvg from "../../../assets/svg/icpRecord";
 // @ts-ignore
 import securityRecordImg from "../../../assets/img/securityRecord.png";
-import { version } from "../../../version";
 import { Icon } from "../../";
 import { FooterInfo, Social } from "../../../config/types";
 
@@ -24,9 +23,9 @@ const footerData = computed(() => {
   const data: Social[] = [];
   // 1.主题版权
   data.push({
-    name: `Theme By Teeker@${version}`,
+    name: `Theme By Teeker`,
     icon: themeSvg,
-    link: "https://teeker.tianke99.cn",
+    link: "https://vp.teek.top/",
     // 可覆盖上面的配置项
     ...theme,
   });

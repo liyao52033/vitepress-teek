@@ -1,15 +1,17 @@
 import { defineConfig } from 'vitepress'
-import { nav } from "./theme/config/nav"
+import { toSidebarNavItems, nav } from "./theme/config/nav";
 import tkThemeConfig from "./theme/config/index";
+import secureInfo from '../secureInfo'
 import SidebarPermalinkPlugin from 'vitepress-plugin-sidebar-permalink'
 import { genSidebar } from 'vitepress-plugin-sidebar-permalink/sidebar'
 import rewritesJson from '../rewrites.json'  //插件自动生成
 
 // 生成侧边栏
 const sidebarOptions = { collapsed: true }
-const sidebar = genSidebar(nav, 'docs/articles', rewritesJson.rewrites, sidebarOptions)
+const sidebar = genSidebar(toSidebarNavItems(nav), 'docs/articles', rewritesJson.rewrites, sidebarOptions)
 
 const tkConfig = tkThemeConfig({
+    tkTheme: true,
     webSiteInfo: {
         createTime: "2025-03-08",
     },
@@ -18,10 +20,10 @@ const tkConfig = tkThemeConfig({
             pattern: "**/*.md",
             globOptions: { ignore: ["utils", "index.md", "login.md", "pages"] }
         },
-        catalogueOption:{
+        catalogueOption: {
             ignoreList: ["pages"]
         },
-        docAnalysisOption:{
+        docAnalysisOption: {
             ignoreList: ["login.md", "pages"]
         }
     }
@@ -61,7 +63,6 @@ export default defineConfig({
     rewrites: rewritesJson.rewrites,
     markdown: {
         lineNumbers: true,
-        externalLinkIcon: true,
         image: {
             lazyLoading: true
         },
@@ -79,14 +80,14 @@ export default defineConfig({
     sitemap: {
         hostname: 'https://vitepress.xiaoying.org.cn/'
     },
-    themeConfig: {
+    themeConfig: ({
         logo: '/img/logo.png',
         nav,
         sidebar,
         search: {
             provider: 'local',
             options: {
-                 _render(src, env, md) {
+                _render(src, env, md) {
                     const html = md.render(src, env)
                     if (env.frontmatter?.search === false) return ''
                     return html
@@ -95,9 +96,12 @@ export default defineConfig({
         },
         loginInfo: {
             isLogin: true, // 是否开启登录
+            username: secureInfo.username, // 登录用户名
+            password: secureInfo.password, // 登录密码
             token: Math.random().toString(32).slice(2) + Math.round(new Date().getTime() / 1000),
             List: [
-               // '/pages/89cd20'
+                // '/pages/89cd20'
+                // '/pages/47a27c'
             ], //加密文章列表
             expiration: 0.5  // token过期时间，单位：天
         },
@@ -109,6 +113,7 @@ export default defineConfig({
             prev: "上一页",
             next: "下一页",
         },
+        externalLinkIcon: true,
         // socialLinks: [
         //     { icon: 'github', link: 'https://github.com/liyao52033/liyao-vue-common' }
         // ],
@@ -119,5 +124,5 @@ export default defineConfig({
                 timeStyle: 'medium'
             }
         }
-    }
+    }) as any,
 })

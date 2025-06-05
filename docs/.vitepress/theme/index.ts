@@ -51,7 +51,7 @@ export default {
             if (router.route.path !== '/') {
                 let { isLogin, List } = siteData.value.themeConfig.loginInfo
                 if (List.includes(router.route.path) && !checkAuth() && isLogin) {
-                    router.go('/login')
+                    router.go(`/login?redirect=${router.route.path}` || '/')
                 }
             }
         }
