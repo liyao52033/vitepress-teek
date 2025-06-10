@@ -1,4 +1,4 @@
-import { TkThemeConfig } from "./types";
+import { ThemeConfig } from "./types";
 import MdH1 from "vitepress-plugin-md-h1";
 import Catalogue from "vitepress-plugin-catalogue";
 import DocAnalysis from "vitepress-plugin-doc-analysis";
@@ -8,11 +8,11 @@ import { UserConfig } from "vitepress";
 import { PluginOption } from "vite";
 import { transformData, transformRaw } from "../post";
 import { Post, TkContentData } from "../post/types";
-import { codeArrowPlugin, imgCardPlugin, navCardPlugin, todoPlugin, shareCardPlugin } from "../markdown";
+import { codeArrowPlugin, imgCardPlugin, navCardPlugin, shareCardPlugin, todoPlugin } from "../markdown";
 import { containerPlugins, createContainersThenUse } from "../markdown/plugins/container";
 import { createAuthor, createCategory, createCoverImg, createPermalink } from "../utils/addFrontmatter";
 
-export default function tkThemeConfig(config: TkThemeConfig = { tkTheme: true }): UserConfig {
+export default function baseConfig(config: ThemeConfig = { tkTheme: true }): UserConfig {
   const { vitePlugins, markdownPlugins = [], markdownContainers = [], containerLabel, ...tkThemeConfig } = config;
   const {
     permalink = true,
@@ -80,8 +80,6 @@ export default function tkThemeConfig(config: TkThemeConfig = { tkTheme: true })
 
     plugins.push(AutoFrontmatter(autoFrontmatterOption));
   }
-
-
 
 
   // 自动给 MD 添加一级标题插件

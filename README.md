@@ -1,5 +1,3 @@
-本项目基于`vitepress-theme-teek`项目
-
 ## 预览地址
 [https://vp.xiaoying.org.cn/](https://vp.xiaoying.org.cn/)
 

@@ -5,7 +5,7 @@ import type { ImageViewerProps, PaginationProps } from "element-plus";
 import type { ContainerLabel, ContainerOption } from "../markdown/plugins/container";
 import type { Ref } from "vue";
 
-export interface TkThemeConfig {
+export interface ThemeConfig {
 
   /**
    * 是否启用主题，默认为 true
@@ -67,7 +67,8 @@ export interface TkThemeConfig {
    */
   vitePlugins?: Plugins;
   /**
-   * markdown 插件列表，请不要在使用 vitepress.markdown.config 配置 md 插件，因为 config 是一个函数，vitepress 并没有做多个 config 合并，因此使用 vitepress.markdown.config 配置会覆盖主题内置 md 插件
+   * markdown 插件列表，请不要在使用 vitepress.markdown.config 配置 md 插件，因为 config 是一个函数，vitepress 并没有做多个 config 合并，因此使用
+   * vitepress.markdown.config 配置会覆盖主题内置 md 插件
    */
   markdownPlugins?: any[];
 
@@ -325,7 +326,8 @@ export interface DocAnalysis {
   pageIteration?: number;
   /**
    * 自定义现有信息
-   * originValue 为计算前的数据，currentValue 为计算后的数据（加单位的数据），针对 lastActiveTime 这些需要判断 N 分、N 时、N 天的 key，originValue 为具体的时间，需要自行计算
+   * originValue 为计算前的数据，currentValue 为计算后的数据（加单位的数据），针对 lastActiveTime 这些需要判断 N 分、N 时、N 天的 key，originValue
+   * 为具体的时间，需要自行计算
    */
   //@ts-ignore
   overrideInfo?: (Omit<PartialKey<DocAnalysisInfo, "label">, "value"> & {

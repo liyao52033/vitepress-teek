@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { nav, toSidebarNavItems } from "./theme/config/nav";
-import tkThemeConfig from "./theme/config/index";
+import baseConfig from "./theme/config/index";
 import secureInfo from '../secureInfo'
 import SidebarPermalinkPlugin from 'vitepress-plugin-sidebar-permalink'
 import { genSidebar } from 'vitepress-plugin-sidebar-permalink/sidebar'
@@ -10,7 +10,7 @@ import rewritesJson from '../rewrites.json' //插件自动生成
 const sidebarOptions = { collapsed: true }
 const sidebar = genSidebar(toSidebarNavItems(nav), 'docs/articles', rewritesJson.rewrites, sidebarOptions)
 
-const tkConfig = tkThemeConfig({
+const tkConfig = baseConfig({
     tkTheme: true,
     webSiteInfo: {
         createTime: "2025-03-08",

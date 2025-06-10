@@ -1,5 +1,5 @@
 import DefaultTheme from 'vitepress/theme'
-import { Theme, inBrowser } from "vitepress";
+import { inBrowser, Theme } from "vitepress";
 import MyLayout from "./layout/index.vue"
 import Login from "./components/Login/Login.vue";
 import { checkAuth } from "./components/Login/helper.js";
@@ -8,8 +8,8 @@ import { NProgress } from 'nprogress-v2/dist/index.js' // 进度条组件
 import 'nprogress-v2/dist/index.css' // 进度条样式
 import 'element-plus/dist/index.css'
 import './styles/index.scss'
-
-
+import baseConfig from "./config";
+import { ThemeConfig } from "./config/types"
 
 export {
     createContainerThenUse,
@@ -17,6 +17,8 @@ export {
     createContainersThenUse,
     createContainersThenGet,
 } from "./markdown/plugins/container";
+
+export { baseConfig, type ThemeConfig }
 
 export default {
     extends: DefaultTheme,
