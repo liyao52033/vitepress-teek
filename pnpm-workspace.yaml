@@ -1,0 +1,3 @@
+packages:
+  - 'vitepress-theme-base-teek/**'
+  - 'apps/**'

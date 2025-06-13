@@ -1,0 +1,88 @@
+{
+    "name": "vitepress-theme-base-teek",
+    "version": "1.1.0",
+    "repository": "git+https://github.com/liyao52033/vitepress-teek.git",
+    "author": "liyao <liyao52033@163.com>",
+    "homepage": "https://vp.xiaoying.org.cn",
+    "bugs": {
+        "url": "https://github.com/liyao52033/vitepress-teek/issues"
+    },
+    "type": "module",
+    "main": "./index.ts",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "default": "./index.ts"
+        },
+        "./config": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "files": [
+        "assets",
+        "components",
+        "dist",
+        "helper",
+        "hooks",
+        "layout",
+        "markdown",
+        "post",
+        "styles",
+        "types",
+        "utils",
+        "index.ts",
+        "tsconfig.json"
+    ],
+    "keywords": [
+        "vitepress-theme",
+        "blog-theme"
+    ],
+    "scripts": {
+        "config:dev": "tsup --watch",
+        "config:build": "tsup"
+    },
+    "dependencies": {
+        "gray-matter": "^4.0.3",
+        "nprogress-v2": "^1.1.10",
+        "tsup": "^8.5.0"
+    },
+    "devDependencies": {
+        "@element-plus/icons-vue": "^2.3.1",
+        "@giscus/vue": "^3.1.1",
+        "@iconify/vue": "^5.0.0",
+        "@types/markdown-it": "^14.1.2",
+        "@types/markdown-it-container": "^2.0.10",
+        "@types/node": "^22.13.10",
+        "@waline/client": "^3.5.7",
+        "chalk": "^5.4.1",
+        "dayjs": "^1.11.13",
+        "echarts": "^5.6.0",
+        "element-plus": "^2.10.1",
+        "fast-glob": "^3.3.3",
+        "gray-matter": "^4.0.3",
+        "inquirer": "^9.2.12",
+        "jiti": "^2.4.2",
+        "js-yaml": "^4.1.0",
+        "markdown-it": "^14.1.0",
+        "markdown-it-container": "^4.0.0",
+        "nprogress-v2": "^1.1.10",
+        "sass": "^1.89.2",
+        "sass-embedded": "^1.85.1",
+        "stylus": "^0.64.0",
+        "typescript": "^5.8.2",
+        "vite": "^5.4.19",
+        "vitepress": "^1.6.3",
+        "vitepress-plugin-catalogue": "^1.0.15",
+        "vitepress-plugin-doc-analysis": "^1.0.12",
+        "vitepress-plugin-file-content-loader": "^1.0.12",
+        "vitepress-plugin-md-h1": "^1.0.11",
+        "vitepress-plugin-setfrontmatter": "^1.2.1",
+        "vitepress-plugin-sidebar-permalink": "^1.5.6",
+        "vue": "^3.5.13"
+    },
+    "peerDependencies": {
+        "vitepress": "^1.6.3",
+        "vue": "^3.5.13"
+    }
+}
