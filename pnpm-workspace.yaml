@@ -1,3 +1,4 @@
 packages:
   - 'vitepress-theme-base-teek/**'
   - 'apps/**'
+  - 'create-theme/**'

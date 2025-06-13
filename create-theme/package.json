@@ -1,0 +1,36 @@
+{
+	"name": "create-base-teek-theme",
+	"version": "1.0.0",
+	"type": "module",
+	"repository": "git@github.com:liyao52033/vitepress-teek.git",
+	"author": "liyao <liyao520332163.com>",
+	"keywords": [
+		"vitepress-theme",
+		"blog-theme",
+		"create-theme"
+	],
+	"bin": {
+		"create-base-teek-theme": "./dist/index.js"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"dev": "tsup --watch --publicDir",
+		"build": "rimraf dist && tsup --minify --publicDir",
+		"start": "pnpm run build && node dist/index.js",
+		"start:dev": "ts-node src/index.ts",
+		"pub": "pnpm run build && npm publish"
+	},
+	"dependencies": {
+		"fs-extra": "^11.1.1"
+	},
+	"devDependencies": {
+		"@types/fs-extra": "^11.0.3",
+		"@types/node": "^22.13.10",
+		"rimraf": "^5.0.1",
+		"ts-node": "^10.9.2",
+		"tsup": "^8.5.0",
+		"typescript": "^5.8.2"
+	}
+}
