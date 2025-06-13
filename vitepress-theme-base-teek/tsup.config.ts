@@ -17,8 +17,7 @@ export default defineConfig({
     'vite',
     'tinyglobby',
     'fdir',
-    'vitepress-plugin-file-content-loader',
-    'vitepress-plugin-setfrontmatter',
+    "element-plus",
     'vitepress-plugin-sidebar-permalink'
   ]
 })

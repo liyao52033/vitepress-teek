@@ -1,6 +1,5 @@
 import type MarkdownIt from "markdown-it";
 import container from "markdown-it-container";
-import { Token } from "markdown-it";
 
 export type ContainerArgs = [typeof container, string, { render: (tokens: Token[], idx: number) => string }];
 
@@ -14,6 +13,12 @@ export interface ContainerOption {
 export interface ContainerLabel {
     noteLabel?: string;
 }
+
+interface Token {
+    nesting: number;
+    info: string;
+}
+
 
 /**
  * 创建 Teeker 内置的 markdown-it-container 插件
