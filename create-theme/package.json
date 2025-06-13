@@ -1,6 +1,6 @@
 {
 	"name": "create-base-teek-theme",
-	"version": "1.0.0",
+	"version": "1.2.0",
 	"type": "module",
 	"repository": "git@github.com:liyao52033/vitepress-teek.git",
 	"author": "liyao <liyao520332163.com>",

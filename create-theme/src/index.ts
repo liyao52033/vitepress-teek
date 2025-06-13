@@ -70,7 +70,7 @@ async function createThemeProject(destination: string) {
   ②  ${command} install
   ③  ${command} run ${isBun ? '--bun ' : ''}dev
   ④  ${command} run ${isBun ? '--bun ' : ''}build
-  ⑤  ${command} run ${isBun ? '--bun ' : ''}serve
+  ⑤  ${command} run ${isBun ? '--bun ' : ''}preview
 `);
 	} catch (err) {
 		console.error('❌ 项目创建失败:', err);
