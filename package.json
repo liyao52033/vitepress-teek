@@ -1,22 +1,15 @@
 {
-  "type": "module",
-  "name": "vitepress-plugin-reading-time",
-  "version": "1.0.0",
-  "description": "VitePress plugin for reading time",
+  "private": "true",
   "scripts": {
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
+    "big:build": "node --max-old-space-size=28672 node_modules/vitepress/bin/vitepress.js build",
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
-    "@types/node": "^22.15.12",
-    "fast-glob": "^3.3.3",
-    "typescript": "^5.8.3",
-    "unbuild": "^3.5.0",
+    "element-plus": "^2.10.2",
     "vitepress": "^1.6.3",
-    "vitepress-plugin-sidebar-permalink": "^1.3.3"
-  },
-  "dependencies": {
-    "gray-matter": "^4.0.3"
+    "vitepress-plugin-sidebar-permalink": "^1.5.6",
+    "vitepress-theme-base-teek": "^1.2.2"
   }
 }

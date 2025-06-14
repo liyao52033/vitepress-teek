@@ -1,11 +1,3 @@
-import type { Theme } from 'vitepress'
-import DefaultTheme from 'vitepress/theme'
-import 'vitepress-plugin-sidebar-permalink/index.css'
+import Theme from "vitepress-theme-base-teek"
 
-
-export default {
-    extends: DefaultTheme,
-    enhanceApp({ router }) {
-        
-    }
-} satisfies Theme
+export default Theme
