@@ -17,9 +17,6 @@
       "DOM",
       "DOM.Iterable"
     ],
-    "types": [
-      "vite/client"
-    ]
   },
   "include": [".",  "**/*.ts", "**/*.mts" ]
 }
