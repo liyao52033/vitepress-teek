@@ -18,6 +18,10 @@ export const nav: DefaultTheme.NavItem[] = [
 		"link": "/pages/87a36a",
 	},
 	{
+		"text": "关于",
+		"link": "/About",
+	},
+	{
 		"text": "Github",
 		"items": [
 			{

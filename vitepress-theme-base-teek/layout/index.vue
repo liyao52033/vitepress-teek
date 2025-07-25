@@ -31,10 +31,12 @@
    </template>
 
    <template #page-top>
-     <ClientOnly>
-       <contribute-chart/>
-       <archives-page />
-     </ClientOnly>
+     <template v-if="frontmatter.archivesPage">
+       <ClientOnly>
+          <contribute-chart/>
+          <archives-page />
+       </ClientOnly>
+     </template>
    </template>
 
    <template #doc-before>
@@ -51,6 +53,7 @@
 
 <script setup lang="ts">
 import DefaultTheme from 'vitepress/theme'
+import { useUnrefData } from "../components/configProvider";
 import NotFound from "../components/common/NotFound.vue";
 import GlobalTip from "../components/common/GlobalTip.vue";
 import pageInfo from "../components/ArticleInfo/pageInfo.vue"
@@ -67,7 +70,9 @@ import {
 import ContributeChart from "../components/common/ContributeChart.vue";
 
 
+
 const { Layout } = DefaultTheme
+const { frontmatter } = useUnrefData()
 
 </script>
 

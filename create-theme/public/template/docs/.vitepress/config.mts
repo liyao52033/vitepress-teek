@@ -14,14 +14,10 @@ const tkConfig = baseConfig({
         createTime: "2025-03-08",
     },
     loginInfo: {
-        isLogin: true, // 是否开启登录
+        isLogin: false, // 是否开启全局登录
         username: secureInfo.username, // 登录用户名
         password: secureInfo.password, // 登录密码
         token: Math.random().toString(32).slice(2) + Math.round(new Date().getTime() / 1000),
-        List: [
-            // '/pages/89cd20'
-            // '/pages/47a27c'
-        ], //加密文章列表
         expiration: 0.5  // token过期时间，单位：天
     },
     vitePlugins: {
@@ -43,7 +39,7 @@ export default defineConfig({
     title: "VitePress",
     description: "A VitePress Site",
     head: [
-        ['link', { rel: 'icon', href: '/img/favicon.ico' }],
+        ['link', { rel: 'icon', href: 'favicon.ico' }],
         [
             "meta",
             {

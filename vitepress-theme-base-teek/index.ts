@@ -9,6 +9,11 @@ import 'nprogress-v2/dist/index.css' // 进度条样式
 import 'element-plus/dist/index.css'
 import './styles/index.scss'
 
+export * from "./components";
+export * from "./utils"
+export * from "./hooks"
+export * from "./helper"
+
 export {
     createContainerThenUse,
     createContainerThenGet,
@@ -16,11 +21,13 @@ export {
     createContainersThenGet,
 } from "./markdown/plugins/container";
 
+
 export default {
     extends: DefaultTheme,
     Layout: MyLayout,
     enhanceApp({ app, router, siteData }) {
 
+        // 注册主题自带的组件
         app.component('Login', Login)
 
         if(inBrowser){
@@ -32,17 +39,13 @@ export default {
 
         let { isLogin, List } = siteData.value.themeConfig.loginInfo
 
-
         // 获取可能已有的 onAfterRouteChange
         const selfOnAfterRouteChange = router.onAfterRouteChange;
         router.onAfterRouteChange = (href: string) => {
             // 调用可能已有的 onAfterRouteChange
             selfOnAfterRouteChange?.(href);
             // 调用自己的函数
-            if(isLogin){
-                login();
-            }
-
+            login();
             Busuanzi()
             if(inBrowser){
                 NProgress.done() // 停止进度条
@@ -51,8 +54,8 @@ export default {
 
         };
         const login = () => {
-            if (router.route.path !== '/') {
-                if (List.includes(router.route.path) && !checkAuth() && isLogin) {
+            if (router.route.path !== '/' && router.route.path !== '/login') {
+                if ((isLogin || List.includes(router.route.path)) && !checkAuth()) {
                     router.go(`/login?redirect=${router.route.path}` || '/')
                 }
             }

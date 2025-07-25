@@ -1,5 +1,6 @@
 {
     "rewrites": {
+        "@pages/About.md": "About.md",
         "@pages/archives.md": "archives.md",
         "@pages/categories.md": "categories.md",
         "@pages/tag.md": "tags.md",
@@ -7,11 +8,14 @@
         "articles/05.组件/10.开发/01.开发指南.md": "pages/a3c3b7.md",
         "articles/05.组件/10.开发/02.vue3组件封装.md": "pages/6fcc8f.md",
         "articles/05.组件/10.开发/03.基于Vue3的Hooks封装与npm使用指南.md": "pages/086430.md",
+        "articles/05.组件/10.开发/10.正则校验.md": "pages/d22904.md",
+        "articles/05.组件/10.开发/50.nginx常用配置.md": "pages/4fab39.md",
         "articles/20.工具类/01.本站插件/01.md插件使用.md": "pages/87a36a.md",
         "articles/20.工具类/01.本站插件/02.自动生成frontmatter.md": "pages/3ab292.md",
         "articles/20.工具类/01.本站插件/03.permalink使用.md": "pages/53ad43.md",
         "articles/20.工具类/01.本站插件/04.自动生成侧边栏.md": "pages/6d8b82.md",
         "articles/20.工具类/01.本站插件/05.路由重写.md": "pages/47a27c.md",
+        "articles/20.工具类/01.本站插件/06.本站主题包.md": "pages/9d746f.md",
         "articles/login.md": "login.md",
         "articles/使用指南/02.基础组件/01.BackTop.md": "pages/1a7d12.md",
         "articles/使用指南/02.基础组件/02.GlobalTip.md": "pages/6ea39c.md",

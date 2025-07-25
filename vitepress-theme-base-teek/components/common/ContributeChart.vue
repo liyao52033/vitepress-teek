@@ -20,7 +20,7 @@ const beforeOnYear = formatDate(new Date(new Date().getTime() - 365 * 24 * 60 * 
 
 
 const contributeList = computed(() => {
-  const contributeObject = ref({});
+  const contributeObject = ref<{[key: string]: number}>({});
 
   posts.value.sortPostsByDate.forEach(item => {
     const date = item.date?.substring(0, 10) || formatDate(new Date(), "yyyy-MM-dd");
