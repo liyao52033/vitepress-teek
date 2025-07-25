@@ -39,7 +39,7 @@ export default defineConfig({
     title: "VitePress",
     description: "A VitePress Site",
     head: [
-        ['link', { rel: 'icon', href: '/img/favicon.ico' }],
+        ['link', { rel: 'icon', href: 'favicon.ico' }],
         [
             "meta",
             {

@@ -1,8 +1,10 @@
 import Theme from "vitepress-theme-base-teek"
+import {autoRegisterComponents} from "./utils/autoRegisterComponents"
 
 export default {
     extends: Theme,
-    enhanceApp({ app }) {
-        // 注册自定义全局组件
+    async enhanceApp({app, router, siteData}) {
+         // 自动注册项目中的组件
+        await autoRegisterComponents(app);
     }
 }
