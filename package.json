@@ -10,6 +10,6 @@
     "element-plus": "^2.10.2",
     "vitepress": "^1.6.3",
     "vitepress-plugin-sidebar-permalink": "^1.5.17",
-    "vitepress-theme-base-teek": "^1.2.7"
+    "vitepress-theme-base-teek": "^1.2.8"
   }
 }

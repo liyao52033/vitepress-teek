@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed, nextTick, watch } from 'vue';
+import { SocialLinks } from '../utils/SocialLinks';
 import {
   Icon,
-  SocialLinks,
   VscodeDark,
   WebstormDark,
   Postman,
@@ -105,7 +105,7 @@ const majorSkills = [
   },
   {
     name: '运维与Linux',
-    percent: 86,
+    percent: 96,
     color: '#96b466',
     tags: [
       { name: 'Nginx', bg: '#e3edfa', color: '#3976c6' },
@@ -168,35 +168,66 @@ const techStackIcons = [
 ];
 const ossProjects = [
   {
-    name: 'VitePress 主题',
-    desc: '基于 Teek的 轻量、简洁高效、灵活配置、易于扩展的 VitePress 主题 ✨',
-    tag: { name: 'React', bg: '#e3edfa', color: '#3976c6' },
-    projectsimg: 'https://picsum.photos/id/180/600/400',
-    Star: 850,
-    Fork: 230,
-    View: 2100,
-    github: 'https://vp.xiaoying.org.cn/pages/9d746f'
+    name: 'vitepress-plugin-sidebar-permalink',
+    desc: 'vitepress插件，实现自动生成 sidebar 侧边栏及 permalink 与 rewrites 映射，支持通过 permalink 访问页面，并借助 rewrites 实现 VitePress 原生目录跳转，彻底解决 permalink 访问导致的 404 问题。',
+    tag: { name: 'vitepress', bg: '#e3edfa', color: '#3976c6' },
+    projectsimg: 'https://picsum.photos/id/237/600/400',
+    Star: 1258,
+    Fork: 342,
+    View: 3876,
+    github: 'https://vp.xiaoying.org.cn/pages/47a27c'
   },
   {
     name: 'liyao-vue-common',
-    desc: '基于 Vue 3 和 Element Plus 的前端组件库，持续更新中',
-    tag: { name: 'JavaScript', bg: '#fffbe6', color: '#e4ae3a' },
-    projectsimg: 'https://picsum.photos/id/1/600/400',
-    Star: 560,
-    Fork: 180,
-    View: 1500,
+    desc: '基于 Vue 3 和 Element Plus 的前端组件库，持续更新中 ✨',
+    tag: { name: 'vue', bg: '#fffbe6', color: '#e4ae3a' },
+    projectsimg: 'https://picsum.photos/id/24/600/400',
+    Star: 876,
+    Fork: 215,
+    View: 2543,
     github: 'https://github.com/liyao52033/liyao-vue-common'
   },
   {
-    name: 'Teek Design Vue3',
-    desc: '一个基于 Vue3、TypeScript、Vite、Pinia、ElementPlus 搭建的现代 Template 管理系统模板。',
-    tag: { name: 'Vue3', bg: '#eaf6ff', color: '#33a474' },
-    projectsimg: 'https://fastly.picsum.photos/id/482/1080/1920.jpg?hmac=evlV0d4x4sWVknpu4iSg4ULVDAcmNBSnf6htH9RsNxw',
-    Star: 1200,
-    Fork: 456,
-    View: 3200,
-    github: 'https://vue3-docs.youngkbt.cn/'
+    name: 'picgo-plugin-cos-url',
+    desc: 'PicGo 插件，主要针对腾讯云COS（推荐开启防盗链） 1、可选择是否开启签名 2、浏览器访问直接下载而不是预览，可配合防盗链只有白名单可以访问 3、删除相册图片同步删除cos里的图片，同时支持阿里云OSS，七牛云Kodo',
+    tag: { name: 'picgo', bg: '#fffbe6', color: '#e4ae3a' },
+    projectsimg: 'https://picsum.photos/id/42/600/400',
+    Star: 723,
+    Fork: 198,
+    View: 1987,
+    github: 'https://github.com/liyao52033/picgo-plugin-cos-url'
+  },
+  {
+    name: '正则校验库',
+    desc: '前端正则表达式校验库，包括常用手机号、邮箱、身份证号、银行卡号、验证码、中文、英文、数字等，同时支持文件扩展名校验',
+    tag: { name: 'JavaScript', bg: '#fffbe6', color: '#e4ae3a' },
+    projectsimg: 'https://picsum.photos/id/96/600/400',
+    Star: 645,
+    Fork: 132,
+    View: 1756,
+    github: 'https://github.com/liyao52033/regular-plus'
+  },
+  {
+    name: 'acme.sh',
+    desc: "acme.sh 实现了 acme 协议，可以从ZeroSSL，Let's Encrypt等 CA 生成免费的证书并自动续期",
+    tag: { name: 'ssl', bg: '#eaf6ff', color: '#33a474' },
+    projectsimg: 'https://picsum.photos/id/180/600/400',
+    Star: 1532,
+    Fork: 487,
+    View: 4289,
+    github: 'https://xiaoying.org.cn/pages/bed906/'
+  },
+  {
+    name: '有来开源组织',
+    desc: '专注构建高效开发应用解决方案的开源社区开发规范，包括前端，后端，移动端，微服务等框架',
+    tag: { name: '有来组织', bg: '#fffbe6', color: '#e4ae3a' },
+    projectsimg: 'https://picsum.photos/id/119/600/400',
+    Star: 968,
+    Fork: 243,
+    View: 3125,
+    github: 'https://www.youlai.tech/'
   }
+  
 ];
 
 /**

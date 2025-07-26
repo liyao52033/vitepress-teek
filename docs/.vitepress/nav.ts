@@ -21,18 +21,18 @@ export const nav: DefaultTheme.NavItem[] = [
 		"text": "关于",
 		"link": "/About",
 	},
-	{
-		"text": "Github",
-		"items": [
-			{
-				"items": [
-					{ "text": "本站仓库", "link": "https://github.com/liyao52033/vitepress-teek" },
-					{ "text": "前端组件仓库", "link": "https://github.com/liyao52033/liyao-vue-common" },
-					{ "text": "官方文档", "link": "https://vp.teek.top/" }
-				],
-			},
-		]
-	}
+	// {
+	// 	"text": "Github",
+	// 	"items": [
+	// 		{
+	// 			"items": [
+	// 				{ "text": "本站仓库", "link": "https://github.com/liyao52033/vitepress-teek" },
+	// 				{ "text": "前端组件仓库", "link": "https://github.com/liyao52033/liyao-vue-common" },
+	// 				{ "text": "官方文档", "link": "https://vp.teek.top/" }
+	// 			],
+	// 		},
+	// 	]
+	// }
 
 ]
 
