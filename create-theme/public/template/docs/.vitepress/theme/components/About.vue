@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed, nextTick, watch } from 'vue';
+import { SocialLinks } from '../utils/SocialLinks';
 import {
   Icon,
-  SocialLinks,
   VscodeDark,
   WebstormDark,
   Postman,

@@ -1,4 +1,4 @@
-import { gitee, email, WhatsApp, telegram } from "./icons";
+import { gitee, email, WhatsApp, telegram } from "vitepress-theme-base-teek";
 
 export const SocialLinks = [
     {
