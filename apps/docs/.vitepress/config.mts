@@ -29,7 +29,7 @@ const tkConfig = baseConfig({
             };
 
             // 大于半年，添加提示
-            const longTime = 2 * 30 * 24 * 60 * 60 * 1000;
+            const longTime = .2 * 30 * 24 * 60 * 60 * 1000;
             if (
                 frontmatter.date &&
                 Date.now() - new Date(frontmatter.date).getTime() > longTime

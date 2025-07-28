@@ -1,7 +1,7 @@
 import DefaultTheme from 'vitepress/theme'
 import { inBrowser, Theme } from "vitepress";
-import MyLayout from "./layout/index.vue"
-import Login from "./components/Login/Login.vue";
+import MyLayout from "./layout"
+import Login from "./components/Login";
 import { checkAuth } from "./components/Login/helper.js";
 import Busuanzi from "./helper/busuanzi";
 import { NProgress } from 'nprogress-v2/dist/index.js' // 进度条组件
@@ -20,7 +20,6 @@ export {
     createContainersThenUse,
     createContainersThenGet,
 } from "./markdown/plugins/container";
-
 
 export default {
     extends: DefaultTheme,

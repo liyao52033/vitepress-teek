@@ -19,6 +19,7 @@ defineOptions({ name:"HomePostList" });
 
 const ns = useNamespace("postList");
 
+const props = defineProps<{ homeCardAfter?: any }>()
 const posts = usePosts();
 const { frontmatter, theme } = useUnrefData();
 
@@ -127,7 +128,15 @@ const handlePagination = () => {
         />
         </div>
       </div>
-      <div :class="ns.e('home-home-content__info')"><HomeInfo /></div>
+      <div :class="ns.e('home-home-content__info')">
+        <HomeInfo>
+            <template v-if="props.homeCardAfter">
+              <div>
+                <component v-for="(vnode, i) in props.homeCardAfter()" :is="vnode" :key="i" />
+              </div>
+            </template>
+        </HomeInfo>
+      </div>
     </div>
   </div>
 </template>

@@ -20,7 +20,7 @@
    </template>
    <template #home-features-after>
      <ClientOnly>
-       <HomePostList />
+       <HomePostList :homeCardAfter="$slots['home-card-after']" />
      </ClientOnly>
    </template>
 

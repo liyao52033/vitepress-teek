@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, unref } from "vue";
+import { computed, unref, type DefineComponent } from "vue";
 import { useData } from "vitepress";
 import { useNamespace } from "../../../hooks";
 import { useUnrefData } from "../../configProvider";
@@ -23,8 +23,19 @@ const isCategoriesPage = computed(() => unref(frontmatterRef).categoriesPage);
 const isTagsPage = computed(() => unref(frontmatterRef).tagsPage);
 const isHomePage = computed(() => !unref(isCategoriesPage) && !unref(isTagsPage));
 
+// 定义组件映射的类型
+interface ComponentEntry {
+  el: DefineComponent<{}, {}, any>;
+  show: boolean;
+  props?: Record<string, any>;
+}
+
+interface ComponentMap {
+  [key: string]: ComponentEntry | undefined;
+}
+
 // 定义组件映射
-const componentMap = computed(() => {
+const componentMap = computed<ComponentMap>(() => {
   const homePage = unref(isHomePage);
   const categoriesPage = unref(isCategoriesPage);
   const tagsPage = unref(isTagsPage);
@@ -57,5 +68,6 @@ const componentMap = computed(() => {
     <template v-for="item in finalHomeCardSort" :key="item">
       <component v-if="componentMap[item]?.show" :is="componentMap[item]?.el" v-bind="componentMap[item]?.props" />
     </template>
+    <slot />
   </div>
 </template>
