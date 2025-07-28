@@ -1,4 +1,4 @@
-import { email, github, moblieQQ, bilibili } from "vitepress-theme-base-teek";
+import {  github, moblieQQ, bilibili, music } from "vitepress-theme-base-teek";
 
 export const SocialLinks = [
     {
@@ -6,8 +6,8 @@ export const SocialLinks = [
         link: "https://github.com/liyao52033",
     },
     {
-        icon: { svg: email },
-        link: "mailto:liyao52033@163.com",
+        icon: { svg: music },
+        link: "https://y.music.163.com/m/user?id=332189110",
     },
     {
         icon: { svg: bilibili },

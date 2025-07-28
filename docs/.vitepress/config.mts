@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import secureInfo from '../secureInfo'
 import { genSidebar } from 'vitepress-plugin-sidebar-permalink/sidebar'
+import { FooterInfo } from "./footer"
 import baseConfig from "vitepress-theme-base-teek/config";
 import rewritesJson from '../rewrites.json'
 import { toSidebarNavItems, nav } from "./nav"
@@ -20,6 +21,33 @@ const tkConfig = baseConfig({
         token: Math.random().toString(32).slice(2) + Math.round(new Date().getTime() / 1000),
         expiration: 0.5  // token过期时间，单位：天
     },
+    articleTip: {
+        articleTopTip: (frontmatter) => {
+            const tip: Record<string, string> = {
+                type: "warning",
+                text: "文章发布已超过两年，内容可能过时，阅读注意甄别。",
+            };
+
+            // 大于两年，添加提示
+            const longTime = 24 * 30 * 24 * 60 * 60 * 1000;
+            if (
+                frontmatter.date &&
+                Date.now() - new Date(frontmatter.date).getTime() > longTime
+            )
+                return tip;
+        },
+        articleBottomTip: () => {
+            return {
+                type: "tip",
+                title: "声明",
+                text: `<p>作者：liyao</p>
+             <p>版权：此文章版权归博主本人所有，如有转载，请注明出处!</p>
+             <p style="margin-bottom: 0">链接：可点击右上角分享此页面复制文章链接</p>
+            `,
+            };
+        },
+    },
+    footerInfo: FooterInfo,
     vitePlugins: {
         autoFrontmatterOption: {
             pattern: "**/*.md",
