@@ -11,7 +11,7 @@ import { transformData, transformRaw } from "../post";
 import { Post, TkContentData } from "../post/types";
 import { codeArrowPlugin, imgCardPlugin, navCardPlugin, shareCardPlugin, todoPlugin } from "../markdown";
 import { containerPlugins, createContainersThenUse } from "../markdown/plugins/container";
-import { createAuthor, createCategory, createCoverImg, createPermalink } from "../utils/addFrontmatter";
+import { createAuthor, createCategory, createCoverImg, createPermalink } from "../utils";
 
 export default function baseConfig(config: ThemeConfig ): UserConfig {
   const { vitePlugins, markdownPlugins = [], markdownContainers = [], containerLabel, ...tkThemeConfig } = config;
@@ -109,7 +109,6 @@ export default function baseConfig(config: ThemeConfig ): UserConfig {
 
   // Post 数据处理插件
   plugins.push(FileContentLoader<TkContentData, Post>(fileContentLoaderOptions));
-
 
   return {
     // 使用永久链接插件需要忽略死链提醒

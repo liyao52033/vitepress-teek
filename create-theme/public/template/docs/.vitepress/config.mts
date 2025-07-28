@@ -2,7 +2,8 @@ import { defineConfig } from 'vitepress'
 import secureInfo from '../secureInfo'
 import { genSidebar } from 'vitepress-plugin-sidebar-permalink/sidebar'
 import baseConfig from "vitepress-theme-base-teek/config";
-import rewritesJson from '../rewrites.json'
+import rewritesJson from '../rewrites.json' //插件自动生成
+import { FooterInfo } from "./footer"
 import { toSidebarNavItems, nav } from "./nav"
 
 // 生成侧边栏
@@ -20,10 +21,40 @@ const tkConfig = baseConfig({
         token: Math.random().toString(32).slice(2) + Math.round(new Date().getTime() / 1000),
         expiration: 0.5  // token过期时间，单位：天
     },
+    articleTip: {
+        articleTopTip: (frontmatter) => {
+            const tip: Record<string, string> = {
+                type: "warning",
+                text: "文章发布较早，内容可能过时，阅读注意甄别。",
+            };
+
+            // 大于半年，添加提示
+            const longTime = 2 * 30 * 24 * 60 * 60 * 1000;
+            if (
+                frontmatter.date &&
+                Date.now() - new Date(frontmatter.date).getTime() > longTime
+            )
+                return tip;
+        },
+        articleBottomTip: () => {
+            return {
+                type: "tip",
+                title: "声明",
+                text: `<p>作者：Hyde</p>
+             <p>版权：此文章版权归 Hyde 所有，如有转载，请注明出处!</p>
+             <p style="margin-bottom: 0">链接：可点击浏览器地址栏分享此页面复制文章链接</p>
+            `,
+            };
+        },
+    },
+    footerInfo: FooterInfo,
     vitePlugins: {
         autoFrontmatterOption: {
             pattern: "**/*.md",
             globOptions: { ignore: ["utils", "index.md", "login.md", "pages"] }
+        },
+        sidebarOption:{
+            // root: "docs/articles"
         },
         catalogueOption: {
             ignoreList: ["pages"]
@@ -39,7 +70,7 @@ export default defineConfig({
     title: "VitePress",
     description: "A VitePress Site",
     head: [
-        ['link', { rel: 'icon', href: 'favicon.ico' }],
+        ['link', { rel: 'icon', href: '/img/favicon.ico' }],
         [
             "meta",
             {

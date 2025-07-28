@@ -1,8 +1,9 @@
+import type { PageData } from "vitepress";
 import type { CatalogueOption } from "vitepress-plugin-catalogue";
 import type { DocAnalysisOption } from "vitepress-plugin-doc-analysis";
 import type { AutoFrontmatterOption } from "vitepress-plugin-setfrontmatter";
 import type { ImageViewerProps, PaginationProps } from "element-plus";
-import type { ContainerLabel, ContainerOption } from "../markdown/plugins/container";
+import type { ContainerLabel, ContainerOption, ContainerProps } from "../markdown/plugins/container";
 import { SidebarPermalinkOptions } from 'vitepress-plugin-sidebar-permalink'
 import type { Ref } from "vue";
 
@@ -50,6 +51,10 @@ export interface ThemeConfig {
    * 文章信息配置，支持在 frontmatter 配置，如果在首页（index.md），格式为 tk.article.[key]，如果在文章页（非 index.md），格式为 article.[key]
    */
   article?: Article;
+  /**
+   * 文章提示配置，支持在 frontmatter 配置，如果在首页（index.md），格式为 tk.articleTip.[key]，如果在文章页（非 index.md），格式为 articleTip.[key]
+   */
+  articleTip?: ArticleTip;
   /**
    * 面包屑配置，支持在文章页的 frontmatter 配置 breadcrumb.[key]
    */
@@ -412,6 +417,14 @@ export interface FooterInfo {
    */
   theme?: Social;
   /**
+   * 页脚顶部信息
+   */
+  topMessage?: string | string[];
+  /**
+   * 页脚底部信息
+   */
+  bottomMessage?: string | string[];
+  /**
    * 博客版权配置
    */
   copyright?: Social & {
@@ -422,7 +435,7 @@ export interface FooterInfo {
     /**
      * 后缀
      */
-    suffix: string;
+    suffix: string
   };
   /**
    * ICP 备案信息配置
@@ -600,4 +613,36 @@ export interface LoginInfo {
    * 过期时间
    */
   expiration?: number;
+}
+
+
+export interface ArticleTip {
+
+  /**
+   * 文章页顶部使用 VitePress 容器添加提示
+   *
+   * @param frontmatter 文档 frontmatter
+   * @param localeIndex 当前国际化语言
+   * @param page 文章信息，即 useData().page 的信息
+   */
+  articleTopTip?: (
+      frontmatter: PageData["frontmatter"],
+      localeIndex: string,
+      page: PageData
+  ) => ContainerProps | undefined;
+
+
+  /**
+   * 文章页底部使用 VitePress 容器添加提示
+   *
+   * @param frontmatter 文档 frontmatter
+   * @param localeIndex 当前国际化语言
+   * @param page 文章信息，即 useData().page 的信息
+   */
+  articleBottomTip?: (
+      frontmatter: PageData["frontmatter"],
+      localeIndex: string,
+      page: PageData
+  ) => ContainerProps | undefined;
+
 }

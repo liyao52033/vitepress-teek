@@ -34,8 +34,14 @@ export const configProvider = (Layout: Component) => {
  * 返回非响应式的 useDate() 对象
  */
 export const useUnrefData = () => {
-  const { theme, frontmatter, site, page } = useData();
-  return { theme: unref(theme), frontmatter: unref(frontmatter), site: unref(site), page: unref(page) };
+  const { theme, frontmatter, site, page, localeIndex } = useData();
+  return {
+    theme: unref(theme),
+    frontmatter: unref(frontmatter),
+    site: unref(site),
+    localeIndex: unref(localeIndex),
+    page: unref(page)
+  }
 };
 
 /**

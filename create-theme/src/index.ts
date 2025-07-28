@@ -12,7 +12,7 @@ const argvs = process.argv.slice(2);
 const bolleanFlag = argvs.filter(item => item.startsWith('--'));
 const stringFlag = argvs.filter(item => !item.startsWith('--'));
 
-const projectName = stringFlag[stringFlag.length - 1] || 'my-blog';
+const projectName = stringFlag[stringFlag.length - 1] || 'vitepress';
 const isBun = bolleanFlag.includes('--bun');
 
 // 帮助信息

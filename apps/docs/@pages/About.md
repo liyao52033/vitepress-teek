@@ -10,7 +10,6 @@ author:
   name: 华总
   link: https://xiaoying.org.cn
 article: false
-navbar: false
 sidebar: false
 editLink: false
 docAnalysis: false

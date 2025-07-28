@@ -12,8 +12,6 @@ import { LoginInfo } from "../../config/types"
 import { useUnrefData } from "../configProvider"
 import Icon from "../Icon";
 
-
-
 defineOptions({ name: "LoginPage" });
 
 const router = useRouter()

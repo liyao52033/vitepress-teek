@@ -1,8 +1,8 @@
 {
   "private": "true",
   "scripts": {
-    "config:dev": "pnpm --perfix vitepress-theme-base-teek run config:dev",
-    "config:build": "pnpm --perfix vitepress-theme-base-teek run config:build",
+    "config:dev": "pnpm --prefix vitepress-theme-base-teek run config:dev",
+    "config:build": "pnpm --prefix vitepress-theme-base-teek run config:build",
     "docs:dev": "pnpm --prefix apps run docs:dev",
     "docs:build": "pnpm --prefix apps run docs:build"
   }

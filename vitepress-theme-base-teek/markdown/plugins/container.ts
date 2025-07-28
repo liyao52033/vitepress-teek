@@ -14,6 +14,23 @@ export interface ContainerLabel {
     noteLabel?: string;
 }
 
+export interface ContainerProps {
+    /**
+     * 类型
+     *
+     * @default 'tip'
+     */
+    type?: "info" | "tip" | "warning" | "danger";
+    /**
+     * 标题
+     */
+    title?: string;
+    /**
+     * 文本
+     */
+    text?: string;
+}
+
 interface Token {
     nesting: number;
     info: string;

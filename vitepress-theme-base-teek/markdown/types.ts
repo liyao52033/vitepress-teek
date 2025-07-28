@@ -210,4 +210,5 @@ export declare namespace NavCard {
      */
     badgeType?: "info" | "tip" | "warning" | "danger";
   }
+
 }

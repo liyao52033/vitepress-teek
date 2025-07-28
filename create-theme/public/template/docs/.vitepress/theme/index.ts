@@ -1,5 +1,5 @@
 import Theme from "vitepress-theme-base-teek"
-import {autoRegisterComponents} from "./utils/autoRegisterComponents"
+import { autoRegisterComponents } from "./utils/autoRegisterComponents"
 
 export default {
     extends: Theme,

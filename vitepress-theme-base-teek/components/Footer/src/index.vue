@@ -23,9 +23,9 @@ const footerData = computed(() => {
   const data: Social[] = [];
   // 1.主题版权
   data.push({
-    name: `Theme By Teeker`,
+    name: `Theme By liyao52033`,
     icon: themeSvg,
-    link: "https://vp.teek.top/",
+    link: "https://vp.xiaoying.org.cn/",
     // 可覆盖上面的配置项
     ...theme,
   });
@@ -51,46 +51,47 @@ const footerData = computed(() => {
 </script>
 
 <template>
-  <div v-if="footerInfo || social.length" :class="[ns.b(), ns.joinNamespace('wallpaper-outside')]">
-    <div v-if="social.length" :class="`${ns.e('icons')} flx-center`">
-      <a v-for="(item, index) in social" :key="index" :href="item.link" :title="item.name" target="_blank">
-        <template v-if="item.icon">
-          <Icon
-            :iconType="item.iconType"
-            :icon="item.icon"
-            size="20px"
-            color="var(--vp-c-text-2)"
-            hover
-            :imgAlt="item.imgAlt"
-          />
-        </template>
-        <span v-else-if="item.name">{{ item.name }}</span>
-      </a>
-    </div>
-
-    <template v-if="footerInfo">
-      <p v-for="m in [footerInfo.message || []].flat()" v-html="m" />
-
-      <div :class="`${ns.e('list')} flx-wrap-justify-center`">
-        <div v-for="item in footerData" :key="item.name" :class="`${ns.e('list__item')} flx-align-center`">
+  <div class="VPDoc container content">
+    <div v-if="footerInfo || social.length" :class="[ns.b(), ns.joinNamespace('wallpaper-outside')]">
+      <div v-if="social.length" :class="`${ns.e('icons')} flx-center`">
+        <a v-for="(item, index) in social" :key="index" :href="item.link" :title="item.name" target="_blank">
           <template v-if="item.icon">
             <Icon
               :iconType="item.iconType"
               :icon="item.icon"
-              size="16px"
+              size="20px"
               color="var(--vp-c-text-2)"
+              hover
               :imgAlt="item.imgAlt"
             />
           </template>
-
-          <a v-if="item.link" :href="item.link" target="_blank">
-            {{ item.name }}
-          </a>
-          <span v-else>{{ item.name }}</span>
-        </div>
-
-        <span v-if="footerInfo.customerHtml" v-html="footerInfo.customerHtml"></span>
+          <span v-else-if="item.name">{{ item.name }}</span>
+        </a>
       </div>
-    </template>
+
+      <template v-if="footerInfo">
+         <p v-for="(message, index) in [footerInfo.topMessage || []].flat()" :key="index" v-html="message" />
+        <div :class="`${ns.e('list')} flx-wrap-justify-center`">
+          <div v-for="item in footerData" :key="item.name" :class="`${ns.e('list__item')} flx-align-center`">
+            <template v-if="item.icon">
+              <Icon
+                :iconType="item.iconType"
+                :icon="item.icon"
+                size="16px"
+                color="var(--vp-c-text-2)"
+                :imgAlt="item.imgAlt"
+              />
+            </template>
+
+            <a v-if="item.link" :href="item.link" target="_blank">
+              {{ item.name }}
+            </a>
+            <span v-else>{{ item.name }}</span>
+          </div>
+          <div v-if="footerInfo.customerHtml" v-html="footerInfo.customerHtml" style="width: 100%"></div>
+        </div>
+        <p v-for="(message, index) in [footerInfo.bottomMessage || []].flat()" :key="index" v-html="message" />
+      </template>
+    </div>
   </div>
 </template>
