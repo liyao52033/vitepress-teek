@@ -56,7 +56,7 @@ export default {
 
 ### 2、填写`docs/config.mts`配置
 
-- 主题专属配置
+ - 主题专属配置
 
 ```
 const sidebarOptions = { collapsed: true }
@@ -95,7 +95,7 @@ const tkConfig = baseConfig({
 
 ```
 
-- 参考[vitepress默认主题配置](https://vitepress.dev/zh/reference/default-theme-config)
+ - 参考[vitepress默认主题配置](https://vitepress.dev/zh/reference/default-theme-config)
 
 
 ```
@@ -195,3 +195,5 @@ export default defineConfig({
     "preview": "vitepress preview docs" //预览项目
   },
 ```
+
+更多查看[脚手架使用](https://vp.xiaoying.org.cn/pages/9d746f)

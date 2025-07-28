@@ -1,104 +1,70 @@
-## 1、脚手架安装
+import { defineConfig } from 'vitepress'
+import secureInfo from '../secureInfo'
+import { genSidebar } from 'vitepress-plugin-sidebar-permalink/sidebar'
+import baseConfig from "vitepress-theme-base-teek/config";
+import rewritesJson from '../rewrites.json' //插件自动生成
+import { FooterInfo } from "./footer"
+import { toSidebarNavItems, nav } from "./nav"
 
-### npm
-```
-npm create base-teek-theme@latest my-first-blog
-``` 
-
-### yarn
-```
-yarn create base-teek-theme@latest my-first-blog
-```
-
-###  pnpm(推荐)
-```
-pnpm create base-teek-theme@latest my-first-blog
-```
-
-###  bun
-```
-bunx create-base-teek-theme@latest my-first-blog --bun
-```
-
-## 2、打开项目，安装依赖
-
-### npm
-```
-npm install
-``` 
-
-### yarn
-```
-yarn install
-```
-
-###  pnpm(推荐)
-```
-pnpm install
-```
-
-###  bun
-```
-bun install
-```
-
-
-## 3、修改配置
-
-### 1、填写`docs/secureInfo`登录账号密码
-```
-export default {
-    username: "",
-    password: "",
-}
-
-```
-
-### 2、填写`docs/config.mts`配置
-
-- 主题专属配置
-
-```
+// 生成侧边栏
 const sidebarOptions = { collapsed: true }
-// genSidebar(导航栏nav, md文章存放位置, rewites重写文件, 是否折叠选项)
 const sidebar = genSidebar(toSidebarNavItems(nav), 'docs/articles', rewritesJson.rewrites, sidebarOptions)
 
 const tkConfig = baseConfig({
     webSiteInfo: {
-        createTime: "2025-03-08", //博客创建时间
+        createTime: "2025-03-08",
     },
     loginInfo: {
-        isLogin: true, // 是否开启登录
+        isLogin: false, // 是否开启全局登录
         username: secureInfo.username, // 登录用户名
         password: secureInfo.password, // 登录密码
         token: Math.random().toString(32).slice(2) + Math.round(new Date().getTime() / 1000),
-        List: [
-            // '/pages/89cd20'
-            // '/pages/47a27c'
-        ], //加密文章列表
         expiration: 0.5  // token过期时间，单位：天
     },
+    articleTip: {
+        articleTopTip: (frontmatter) => {
+            const tip: Record<string, string> = {
+                type: "warning",
+                text: "文章发布较早，内容可能过时，阅读注意甄别。",
+            };
+
+            // 大于半年，添加提示
+            const longTime = 2 * 30 * 24 * 60 * 60 * 1000;
+            if (
+                frontmatter.date &&
+                Date.now() - new Date(frontmatter.date).getTime() > longTime
+            )
+                return tip;
+        },
+        articleBottomTip: () => {
+            return {
+                type: "tip",
+                title: "声明",
+                text: `<p>作者：Hyde</p>
+             <p>版权：此文章版权归 Hyde 所有，如有转载，请注明出处!</p>
+             <p style="margin-bottom: 0">链接：可点击浏览器地址栏分享此页面复制文章链接</p>
+            `,
+            };
+        },
+    },
+    footerInfo: FooterInfo,
     vitePlugins: {
         autoFrontmatterOption: {
             pattern: "**/*.md",
-            globOptions: { ignore: ["utils", "index.md", "login.md", "pages"] } // frontmatter插件忽略目录
+            globOptions: { ignore: ["utils", "index.md", "login.md", "pages"] }
+        },
+        sidebarOption:{
+            // root: "docs/articles"
         },
         catalogueOption: {
-            ignoreList: ["pages"] // 目录页插件忽略目录
+            ignoreList: ["pages"]
         },
         docAnalysisOption: {
-            ignoreList: ["login.md", "pages"] // 文档分析插件忽略目录
+            ignoreList: ["login.md", "pages"]
         }
     }
 });
 
-
-```
-
-- 参考[vitepress默认主题配置](https://vitepress.dev/zh/reference/default-theme-config)
-
-
-```
 export default defineConfig({
     extends: tkConfig,
     title: "VitePress",
@@ -177,21 +143,3 @@ export default defineConfig({
         }
     })
 })
-
-```
-
-## 4、把`docs/articles`下的 Markdown文章 换成自己的
-
-直接在`docs/articles`目录下的Markdown文章不参与侧边栏生成
-
-## 5、运行项目
-
-根据所用包管理器运行项目，推荐用`pnpm run dev`
-```
- "scripts": {
-    "dev": "vitepress dev docs",   //运行项目
-    "build": "vitepress build docs", //打包项目
-    "big:build": "node --max-old-space-size=28672 node_modules/vitepress/bin/vitepress.js build", //打包项目(单个md大于500k)
-    "preview": "vitepress preview docs" //预览项目
-  },
-```
