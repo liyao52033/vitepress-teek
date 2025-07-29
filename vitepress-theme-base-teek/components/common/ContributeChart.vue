@@ -123,7 +123,7 @@ const renderChart = (data: any) => {
     echarts.dispose(contributeChart.value);
   }
   if (chartRef.value) {
-    contributeChart.value = echarts.init(chartRef.value);
+    contributeChart.value = echarts.init(chartRef.value as any);
   }
   option.series.data = data;
   contributeChart.value.setOption(option);

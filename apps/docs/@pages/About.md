@@ -14,6 +14,7 @@ sidebar: false
 editLink: false
 docAnalysis: false
 inCatalogue: false
+footer: false
 ---
 
 <About></About>

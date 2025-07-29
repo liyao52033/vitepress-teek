@@ -2,6 +2,7 @@
 import { useNamespace } from "../../../hooks";
 import { usePosts, useUnrefData } from "../../configProvider";
 import { Content } from "vitepress";
+import ContributeChart from "../../common/ContributeChart.vue";
 
 defineOptions({ name: "ArchivesPage" });
 
@@ -13,6 +14,7 @@ const posts = usePosts();
 </script>
 
 <template>
+  <contribute-chart/>
   <div :class="`${ns.b()} ${ns.joinNamespace('page')}`">
     <div :class="`${ns.e('header')} flx-justify-between`">
       <div :class="ns.joinNamespace('page-title-h1')">{{ frontmatter.title }}</div>

@@ -15,7 +15,7 @@
    <template #doc-footer-before>
       <ClientOnly>
         <BackTop />
-        <VpContainer v-if="bottomTipConfig" v-bind="bottomTipConfig" />
+        <VpContainer v-if="bottomTipConfig && bottomTip" v-bind="bottomTipConfig" />
      </ClientOnly>
    </template>
    <template #home-features-after>
@@ -26,17 +26,14 @@
 
    <template #layout-bottom>
      <ClientOnly>
-        <Footer></Footer>
+      <Footer v-if="isFooter"></Footer>
      </ClientOnly>
    </template>
 
    <template #page-top>
-     <template v-if="frontmatter.archivesPage">
-       <ClientOnly>
-          <contribute-chart/>
-          <archives-page />
-       </ClientOnly>
-     </template>
+     <ClientOnly>
+        <archives-page v-if="isArchives" />
+     </ClientOnly>
    </template>
 
    <template #doc-before>
@@ -45,7 +42,7 @@
         <ArticlePageStyle />
         <CodeBlockToggle />
         <pageInfo />
-        <VpContainer v-if="topTipConfig" v-bind="topTipConfig" />
+        <VpContainer v-if="topTipConfig && topTip" v-bind="topTipConfig" />
       </ClientOnly>
    </template>
  </Layout>
@@ -54,14 +51,12 @@
 
 <script setup lang="ts">
 import DefaultTheme from "vitepress/theme"
-import { useUnrefData } from "../components/configProvider"
+import { computed, unref } from "vue";
 import { useArticleTips } from "../hooks"
-
 import NotFound from "../components/common/NotFound.vue";
 import GlobalTip from "../components/common/GlobalTip.vue";
 import pageInfo from "../components/ArticleInfo/pageInfo.vue"
 import BackTop from '../components/common/BackTop.vue';
-import ContributeChart from "../components/common/ContributeChart.vue";
 import VpContainer from "../components/Container";
 import {
   Footer,
@@ -71,11 +66,17 @@ import {
   ArticlePageStyle,
   CodeBlockToggle
 } from "../components/index";
+import { useData } from "vitepress";
 
 const { Layout } = DefaultTheme
-const { frontmatter } = useUnrefData()
+const { frontmatter } = useData()
 
 const { topTipConfig, bottomTipConfig } = useArticleTips()
+
+const isFooter = computed(() => unref(frontmatter).footer !== false)
+const bottomTip = computed(() => unref(frontmatter).bottomTip !== false)
+const topTip = computed(() => unref(frontmatter).topTip !== false)
+const isArchives = computed(() => unref(frontmatter).archivesPage)
 
 </script>
 

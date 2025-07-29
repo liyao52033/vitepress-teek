@@ -1,7 +1,7 @@
 import { App } from 'vue';
 
 /**
- * 自动注册宿主项目中 .vitepress/theme/components 目录下的组件
+ * 自动注册项目中 .vitepress/theme/components 目录下的组件
  *
  * @param app VitePress 应用实例
  */

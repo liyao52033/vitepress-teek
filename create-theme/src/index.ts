@@ -41,6 +41,8 @@ async function createThemeProject(destination: string) {
 	}
 
 	try {
+
+		// 复制模板
 		await fs.copy(templatePath, destination);
 
 		// 复制配置文件
