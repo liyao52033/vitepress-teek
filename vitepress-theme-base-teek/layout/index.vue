@@ -8,7 +8,8 @@
 
    <template #doc-top>
       <ClientOnly>
-         <GlobalTip />
+        <GlobalTip />
+        <slot name="liyao-doc-top" v-if="currentLayout === 'doc'" />
      </ClientOnly>
    </template>
 
@@ -16,23 +17,28 @@
       <ClientOnly>
         <BackTop />
         <VpContainer v-if="bottomTipConfig && bottomTip" v-bind="bottomTipConfig" />
+        <slot name="liyao-doc-footer-before" v-if="currentLayout === 'doc'" />
      </ClientOnly>
    </template>
+
    <template #home-features-after>
      <ClientOnly>
        <HomePostList :homeCardAfter="$slots['home-card-after']" />
+       <slot name="liyao-home-features-after" v-if="currentLayout === 'home'" />
      </ClientOnly>
    </template>
 
    <template #layout-bottom>
      <ClientOnly>
-      <Footer v-if="isFooter"></Footer>
+       <Footer v-if="isFooter"></Footer>
+       <slot name="liyao-layout-bottom"  />
      </ClientOnly>
    </template>
 
    <template #page-top>
      <ClientOnly>
         <archives-page v-if="isArchives" />
+        <slot name="liyao-page-top" v-if="currentLayout === 'page'" />
      </ClientOnly>
    </template>
 
@@ -43,6 +49,7 @@
         <CodeBlockToggle />
         <pageInfo />
         <VpContainer v-if="topTipConfig && topTip" v-bind="topTipConfig" />
+        <slot name="liyao-doc-before" v-if="currentLayout === 'doc'" />
       </ClientOnly>
    </template>
  </Layout>
@@ -72,6 +79,8 @@ const { Layout } = DefaultTheme
 const { frontmatter } = useData()
 
 const { topTipConfig, bottomTipConfig } = useArticleTips()
+
+const currentLayout = computed(() => unref(frontmatter).layout || 'doc')
 
 const isFooter = computed(() => unref(frontmatter).footer !== false)
 const bottomTip = computed(() => unref(frontmatter).bottomTip !== false)
