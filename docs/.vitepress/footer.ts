@@ -33,7 +33,7 @@ export const FooterInfo = {
     },
     // icpRecord: {
     //     name: "", //ICP备案号
-    //     link: "http://beian.miit.gov.cn/",
+    //     link: "https://beian.miit.gov.cn/",
     // },
     // 网络安全备案信息配置
     // securityRecord: {

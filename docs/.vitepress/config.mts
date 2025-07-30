@@ -25,11 +25,11 @@ const tkConfig = baseConfig({
         articleTopTip: (frontmatter) => {
             const tip: Record<string, string> = {
                 type: "warning",
-                text: "文章发布已超过两年，内容可能过时，阅读注意甄别。",
+                text: "文章发布已超过一年，内容可能过时，阅读注意甄别。",
             };
 
-            // 大于两年，添加提示
-            const longTime = 24 * 30 * 24 * 60 * 60 * 1000;
+            // 大于一年，添加提示
+            const longTime = 12 * 30 * 24 * 60 * 60 * 1000;
             if (
                 frontmatter.date &&
                 Date.now() - new Date(frontmatter.date).getTime() > longTime
@@ -40,10 +40,9 @@ const tkConfig = baseConfig({
             return {
                 type: "tip",
                 title: "声明",
-                text: `<p>作者：liyao</p>
-             <p>版权：此文章版权归博主本人所有，如有转载，请注明出处!</p>
-             <p style="margin-bottom: 0">链接：可点击右上角分享此页面复制文章链接</p>
-            `,
+                text: `作者：<a href="https:xiaoying.org.cn" target="_blank">华总</a>
+                       <p>版权：此文章版权归博主本人所有，如有转载，请注明出处!</p>
+                       <p style="margin-bottom: 0">链接：可通过浏览器地址栏分享此页面文章链接</p> `,
             };
         },
     },

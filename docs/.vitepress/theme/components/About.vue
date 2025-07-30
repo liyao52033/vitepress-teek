@@ -171,7 +171,7 @@ const ossProjects = [
     name: 'vitepress-plugin-sidebar-permalink',
     desc: 'vitepress插件，实现自动生成 sidebar 侧边栏及 permalink 与 rewrites 映射，支持通过 permalink 访问页面，并借助 rewrites 实现 VitePress 原生目录跳转，彻底解决 permalink 访问导致的 404 问题。',
     tag: { name: 'vitepress', bg: '#e3edfa', color: '#3976c6' },
-    projectsimg: 'https://picsum.photos/id/237/600/400',
+    projectsimg: 'https://picsum.photos/id/66/600/400',
     Star: 1258,
     Fork: 342,
     View: 3876,

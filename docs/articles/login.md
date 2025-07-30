@@ -8,6 +8,7 @@ sidebar: false
 editLink: false
 docAnalysis: false
 inCatalogue: false
+footer: false
 permalink: /login
 author:
   name: 华总
