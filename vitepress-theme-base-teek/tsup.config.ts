@@ -10,14 +10,5 @@ export default defineConfig({
   clean: true,
   sourcemap: false,
   silent: true,
-  splitting: false,
-  external: [
-    'vitepress',
-    'vue',
-    'vite',
-    'tinyglobby',
-    'fdir',
-    "element-plus",
-    'vitepress-plugin-sidebar-permalink'
-  ]
+  splitting: false
 })
