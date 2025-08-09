@@ -18,5 +18,5 @@
       "DOM.Iterable"
     ],
   },
-  "include": [".",  "**/*.ts", "**/*.mts" ]
+  "include": [".",  "**/*.ts", "**/*.mts", "docs/.vitepress/theme/components/Coze/dragDialog.js" ]
 }

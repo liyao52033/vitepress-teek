@@ -5,12 +5,12 @@ import { App } from 'vue';
  *
  * @param app VitePress 应用实例
  */
-export async function autoRegisterComponents(app: App ) {
+export async function autoRegisterComponents(app: App) {
   try {
 
     //@ts-ignore
     // 默认注册为全局组件的目录
-    const modules = import.meta.glob('../components/*.vue');
+    const modules = import.meta.glob('../global/*.vue');
 
     for (const [path, module] of Object.entries(modules)) {
       const componentName = path.split('/').pop()?.replace('.vue', '');
@@ -28,4 +28,3 @@ export async function autoRegisterComponents(app: App ) {
     console.error('自动注册组件时出错:', error);
   }
 }
-

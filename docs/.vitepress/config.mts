@@ -1,14 +1,11 @@
 import { defineConfig } from 'vitepress'
 import secureInfo from '../secureInfo'
-import { genSidebar } from 'vitepress-plugin-sidebar-permalink/sidebar'
+import { generatedSidebar, generatedRewrites } from 'vitepress-plugin-sidebar-permalink'
 import { FooterInfo } from "./footer"
 import baseConfig from "vitepress-theme-base-teek/config";
 import rewritesJson from '../rewrites.json'
 import { toSidebarNavItems, nav } from "./nav"
 
-// 生成侧边栏
-const sidebarOptions = { collapsed: true }
-const sidebar = genSidebar(toSidebarNavItems(nav), 'docs/articles', rewritesJson.rewrites, sidebarOptions)
 
 const tkConfig = baseConfig({
     webSiteInfo: {
@@ -52,6 +49,10 @@ const tkConfig = baseConfig({
             pattern: "**/*.md",
             globOptions: { ignore: ["utils", "index.md", "login.md", "pages"] }
         },
+        sidebarOption: {
+            rewrites: rewritesJson.rewrites,
+            navLinks: toSidebarNavItems(nav),
+        },
         catalogueOption: {
             ignoreList: ["pages"]
         },
@@ -81,13 +82,20 @@ export default defineConfig({
                 content: "notranslate",
             },
         ],
+        [
+            "meta",
+            {
+                name: "algolia-site-verification",
+                content: "A73B712D10329A16"
+            }
+        ]
     ],
     vite: {
         build: {
             chunkSizeWarningLimit: 2000,
         }
     },
-    rewrites: rewritesJson.rewrites,
+    rewrites: generatedRewrites,
     markdown: {
         lineNumbers: true,
         image: {
@@ -110,7 +118,7 @@ export default defineConfig({
     themeConfig: ({
         logo: '/img/logo.png',
         nav,
-        sidebar,
+        sidebar: generatedSidebar,
         search: {
             provider: 'local',
             options: {
