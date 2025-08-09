@@ -133,7 +133,8 @@ function useFPS(enabled = true) {
   let isActive = false;
 
   const updateFPS = (time: number) => {
-    if (!enabled || !isActive) return;
+    // 即使初始化时enabled为false，后续也可以通过isActive控制
+    if (!isActive) return;
 
     if (lastTime === 0) {
       lastTime = time;
@@ -154,14 +155,12 @@ function useFPS(enabled = true) {
   };
 
   const startFPS = () => {
-    if (enabled && typeof requestAnimationFrame !== 'undefined' && !isActive) {
+    if (typeof requestAnimationFrame !== 'undefined' && !isActive) {
       isActive = true;
       lastTime = 0;
       frameCount = 0;
-      // 延迟启动FPS监控，优先加载页面内容
-      setTimeout(() => {
-        animationFrameId = requestAnimationFrame(updateFPS);
-      }, 1000);
+      // 直接启动FPS监控
+      animationFrameId = requestAnimationFrame(updateFPS);
     }
   };
 
@@ -184,13 +183,12 @@ function useFPS(enabled = true) {
 // ------------------ 使用 Hook ------------------
 const { systemInfo, loading, getSystemInfo, startTimeUpdate } = useSystemInfo();
 
-// 默认不显示FPS，减少初始加载时的计算量
-const showFPS = ref(false);
+// 默认显示FPS
+const showFPS = ref(true);
 const { fps, startFPS, stopFPS } = useFPS(showFPS.value);
 
-// 延迟启用FPS显示
+// 延迟启动FPS计算，减少初始加载时的计算量
 setTimeout(() => {
-  showFPS.value = true;
   startFPS();
 }, 2000);
 

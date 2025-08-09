@@ -1,7 +1,7 @@
 import Theme from "vitepress-theme-base-teek"
 import { h } from "vue";
-import Coze from "./components/Coze.vue";
-import CozeChat from "./components/Coze-chat.vue";
+import Coze from "./components/Coze/index.vue";
+import CozeChat from "./components/Coze/Coze-chat.vue";
 import WelcomeCard from "./components/WelcomeCard.vue";
 import { autoRegisterComponents } from "./utils/autoRegisterComponents"
 

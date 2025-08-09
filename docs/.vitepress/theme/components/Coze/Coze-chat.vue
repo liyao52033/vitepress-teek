@@ -1,8 +1,30 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, watch } from "vue";
 import { useDraggable } from "@vueuse/core";
+import { ElMessage } from "element-plus";
 
 let observer: MutationObserver | null = null;
+
+// 生成拖拽提示 DOM
+// function createDragTip(): HTMLElement {
+//   const tip = document.createElement('span');
+//   tip.classList.add('el-message', 'el-message--success');
+//   tip.style.display = 'inline-block';
+//   tip.style.padding = '2px 8px';
+//   tip.style.fontSize = '12px';
+//   tip.style.margin = '0 auto';
+//   tip.style.width = 'fit-content';
+//   tip.style.userSelect = 'none';
+//   tip.style.position = 'absolute';
+//   tip.style.top = '2px';
+//   tip.style.textAlign = 'center';
+
+//   tip.innerHTML = `<i class="el-message__icon el-icon-success"></i>拖拽移动`;
+
+//   return tip;
+// }
+
+
 
 const initializeDraggable = (container: HTMLElement) => {
   if (container.dataset.dragInitialized === "true") return;
@@ -31,9 +53,9 @@ const initializeDraggable = (container: HTMLElement) => {
   dragHandle.style.cursor = "move"; // 四向箭头十字
   dragHandle.style.userSelect = "none";
   dragHandle.style.zIndex = "10000";
+  dragHandle.innerHTML = '';
+  // dragHandle.appendChild(createDragTip());
   // dragHandle.style.background = "rgba(0,0,0,0.1)"; // 调试时可见
-
-  container.style.paddingTop = "30px"; // 给内容留空间，防止遮挡
 
   container.insertBefore(dragHandle, container.firstChild);
 
@@ -48,16 +70,11 @@ const initializeDraggable = (container: HTMLElement) => {
       dragHandle.style.cursor = "move";
       container.style.transition = "none";
       if (iframe) iframe.style.pointerEvents = "none";
-     // console.log("拖拽开始");
     },
-    // onMove() {
-    //   console.log("拖拽中", x.value, y.value);
-    // },
     onEnd() {
       dragHandle.style.cursor = "move";
       container.style.transition = "";
       if (iframe) iframe.style.pointerEvents = "auto";
-   //   console.log("拖拽结束");
     },
   });
 
@@ -71,7 +88,16 @@ const initializeDraggable = (container: HTMLElement) => {
   watch([x, y], () => {
     updatePosition();
   });
+
+  ElMessage({
+    message: '拖拽顶部移动对话框',
+    type: 'success',
+    duration: 3000,
+  });
+
 };
+
+
 
 const setupObserver = () => {
   observer = new MutationObserver((mutations) => {
@@ -143,4 +169,13 @@ onBeforeUnmount(() => {
 
 </template>
 
-<style></style>
+<style>
+/* .fa8097ff55eabaa5782b .e4f8c2c1d9d493c0cfdb {
+    position: absolute;
+    right: 16px;
+    top: 40px !important;
+    width: 32px;
+    height: 32px;
+    z-index: 1000;
+} */
+</style>
