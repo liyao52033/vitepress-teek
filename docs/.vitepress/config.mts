@@ -81,13 +81,6 @@ export default defineConfig({
                 name: "google",
                 content: "notranslate",
             },
-        ],
-        [
-            "meta",
-            {
-                name: "algolia-site-verification",
-                content: "A73B712D10329A16"
-            }
         ]
     ],
     vite: {

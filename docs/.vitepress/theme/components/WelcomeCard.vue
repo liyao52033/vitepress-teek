@@ -417,14 +417,18 @@ onMounted(() => {
   }
   
   .stat-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .stat-label {
+    flex-shrink: 0;
   }
   
   .stat-value {
-    align-self: flex-end;
-    width: 100%;
     text-align: right;
   }
 }
