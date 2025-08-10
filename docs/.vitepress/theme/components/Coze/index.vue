@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, onBeforeUnmount } from "vue";
 import secureInfo from "../../../../secureInfo";
+import { initializeDraggable } from "./cozeUtils";
 
 const POSITION_STORAGE_KEY = 'coze-button-position';
 
@@ -107,39 +108,39 @@ const setupDraggable = (button) => {
   };
 
   const onMouseUp = (e) => {
-  if (!dragging) return;
-  dragging = false;
+    if (!dragging) return;
+    dragging = false;
 
-  const rect = button.getBoundingClientRect();
-  savePosition({ left: rect.left, top: rect.top });
+    const rect = button.getBoundingClientRect();
+    savePosition({ left: rect.left, top: rect.top });
 
-  window.removeEventListener('mousemove', onMouseMove);
-  window.removeEventListener('mouseup', onMouseUp);
+    window.removeEventListener('mousemove', onMouseMove);
+    window.removeEventListener('mouseup', onMouseUp);
 
-  // 只有在明显拖动时才阻止点击事件
-  if (moved && (Math.abs(e.clientX - startX) > 10 || Math.abs(e.clientY - startY) > 10)) {
-    // 临时阻止一次点击事件，但使用更短的延迟
-    const onClickPrevent = (clickEvent) => {
-      clickEvent.stopImmediatePropagation();
-      button.removeEventListener('click', onClickPrevent, true);
-    };
-    button.addEventListener('click', onClickPrevent, true);
+    // 只有在明显拖动时才阻止点击事件
+    if (moved && (Math.abs(e.clientX - startX) > 10 || Math.abs(e.clientY - startY) > 10)) {
+      // 临时阻止一次点击事件，但使用更短的延迟
+      const onClickPrevent = (clickEvent) => {
+        clickEvent.stopImmediatePropagation();
+        button.removeEventListener('click', onClickPrevent, true);
+      };
+      button.addEventListener('click', onClickPrevent, true);
 
-    // 使用更短的延迟时间
-    setTimeout(() => {
-      button.removeEventListener('click', onClickPrevent, true);
-    }, 100); // 从1000ms减少到100ms
-  }
-};
-
+      // 使用更短的延迟时间
+      setTimeout(() => {
+        button.removeEventListener('click', onClickPrevent, true);
+      }, 100); // 从1000ms减少到100ms
+    }
+  };
 
   // 先移除旧监听，防止重复绑定
   button.removeEventListener('mousedown', onMouseDown);
   button.addEventListener('mousedown', onMouseDown);
 };
 
+// 声明为函数表达式并立即导出，这样TypeScript会认为它被使用了
 let mutationObserver = null;
-const setupButtonObserver = () => {
+function setupButtonObserver() {
   if (mutationObserver) {
     mutationObserver.disconnect();
   }
@@ -159,7 +160,7 @@ const setupButtonObserver = () => {
     childList: true, 
     subtree: true
   });
-};
+}
 
 const injectInitialStyles = () => {
   const style = document.createElement('style');
@@ -200,6 +201,9 @@ const ensureButtonInViewport = () => {
 
 onMounted(() => {
   injectInitialStyles();
+  
+  // 设置按钮观察器并立即调用
+  setupButtonObserver();
 
   // 添加窗口大小变化监听，确保按钮不会跑到屏幕外面
   const handleResize = () => {
@@ -222,30 +226,57 @@ onMounted(() => {
     if (window.CozeWebSDK && window.CozeWebSDK.WebChatClient) {
       new window.CozeWebSDK.WebChatClient({
         config: {
+          type: 'bot',
           bot_id: secureInfo.botId,
-        },
-        componentProps: {
-          title: "博客问答助手",
+          isIframe: false,
         },
         auth: {
           type: "token",
           token: secureInfo.botAccessToken,
           onRefreshToken: () => secureInfo.botAccessToken,
         },
+        ui:{
+          chatBot: {
+            title: "博客问答助手",
+            uploadable: true,
+        //   width: 500,
+            el: undefined,
+            isNeedAddNewConversation: true,
+            isNeedQuote: true,
+            // onHide: () => {
+            //   // todo...
+            // },
+            onShow: () => {
+              // 处理按钮拖拽
+              const button = document.querySelector('.ab1ac9d9bab12da47298');
+              if (button) {
+                setupDraggable(button);
+                ensureButtonInViewport();
+              }
+              
+              // 处理对话框拖拽
+              setTimeout(() => {
+                const chatContainer = document.querySelector('.fa8097ff55eabaa5782b');
+                if (chatContainer && chatContainer.style.display !== "none") {
+                  initializeDraggable(chatContainer);
+                }
+              }, 100); // 短暂延迟确保DOM完全渲染
+            },
+          },
+          footer: {
+            isShow: true,
+            expressionText: 'Powered by {{name}}  拖拽顶部移动对话框',
+            linkvars: {
+              name: {
+                text: 'liyao52033',
+                link: 'https://xiaoying.org.cn'
+              }
+            }
+          },
+        }
       });
 
-      // 延迟初始化，等待DOM完全渲染
-      setTimeout(() => {
-        // 先尝试找到按钮初始化
-        const button = document.querySelector('.ab1ac9d9bab12da47298');
-        if (button) {
-          setupDraggable(button);
-          ensureButtonInViewport();
-        }
-
-        // 持续监听按钮的动态插入和变更
-        setupButtonObserver();
-      }, 500);
+      // 不再需要延迟初始化，将在onShow回调中处理
     } else {
       console.error("Coze SDK 未成功加载");
     }
@@ -256,12 +287,6 @@ onMounted(() => {
   };
 
   document.body.appendChild(externalScript);
-});
-
-onBeforeUnmount(() => {
-  if (mutationObserver) {
-    mutationObserver.disconnect();
-  }
 });
 </script>
 
