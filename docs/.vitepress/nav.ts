@@ -15,7 +15,7 @@ export const nav: DefaultTheme.NavItem[] = [
 	},
 	{
 		"text": "资源",
-		"link": "/pages/87a36a",
+		"link": "/pages/9d746f",
 	},
 	{
 		"text": "关于",
