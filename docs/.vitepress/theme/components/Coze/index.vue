@@ -15,7 +15,7 @@ const DRAG_THROTTLE_MS = isMobile ? 40 : 16;
 const SNAP_DISTANCE_PX = isMobile ? 50 : 20;
 
 // 初始底部距离 px (影响初始 top 计算)
-const BOTTOM_SAFE_AREA_PX = isMobile ? 40 : 80;
+const BOTTOM_SAFE_AREA_PX = isMobile ? 86 : 96;
 
 // 保存和读取的位置结构改成 leftRatio 和 topRatio
 const getSavedPosition = () => {
@@ -39,6 +39,17 @@ const savePosition = (pos) => {
 const setupDraggable = (button) => {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
+
+  // 移动端固定在初始位置，不开启拖拽
+  if (isMobile) {
+    button.style.position = 'fixed';
+    button.style.left = 'auto';
+    button.style.top = 'auto';
+    button.style.right = ''; // 交由 CSS 控制（含 !important）
+    button.style.bottom = ''; // 交由 CSS 控制（含 !important）
+    button.style.transform = 'none';
+    return;
+  }
 
   const savedPos = getSavedPosition();
 
@@ -179,8 +190,8 @@ const injectInitialStyles = () => {
       .ab1ac9d9bab12da47298.bc81871a44ea566dd738 {
         width: 3.5rem !important;
         height: 3.5rem !important;
-        right: 0.625rem !important;
-        bottom: 0.625rem !important;
+        right: -1.5rem !important;
+        bottom: 6rem !important;
       }
     }
     @media (max-width: 480px) {
@@ -197,6 +208,7 @@ const injectInitialStyles = () => {
 const ensureButtonInViewport = () => {
   const button = document.querySelector('.ab1ac9d9bab12da47298');
   if (!button) return;
+  if (isMobile) return;
   const rect = button.getBoundingClientRect();
   const vw = window.innerWidth;
   const vh = window.innerHeight;
@@ -224,6 +236,16 @@ onMounted(() => {
   const handleResize = () => {
     const button = document.querySelector('.ab1ac9d9bab12da47298');
     if (!button) return;
+    if (isMobile) {
+      // 移动端保持由 CSS 控制的右下角位置
+      button.style.position = 'fixed';
+      button.style.left = 'auto';
+      button.style.top = 'auto';
+      button.style.right = '';
+      button.style.bottom = '';
+      button.style.transform = 'none';
+      return;
+    }
     const savedPos = getSavedPosition();
     if (savedPos?.leftRatio != null && savedPos?.topRatio != null) {
       const vw = window.innerWidth;
@@ -278,7 +300,7 @@ onMounted(() => {
               }
               setTimeout(() => {
                 const chatContainer = document.querySelector('.fa8097ff55eabaa5782b');
-                if (chatContainer && chatContainer.style.display !== 'none') {
+                if (!isMobile && chatContainer && chatContainer.style.display !== 'none') {
                   initializeDraggable(chatContainer);
                 }
               }, 100);
@@ -303,3 +325,6 @@ onMounted(() => {
   document.body.appendChild(script);
 });
 </script>
+
+<template> 
+</template>

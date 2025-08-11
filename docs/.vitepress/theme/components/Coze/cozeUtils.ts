@@ -1,8 +1,8 @@
-import { watch, onBeforeUnmount } from "vue";
+import { watch } from "vue";
 import { useDraggable } from "@vueuse/core";
 
 /**
- * 拖拽容器（顶部和footer两拖拽区），带边界限制
+ * 对话框拖拽容器，带边界限制
  * @param container 容器元素
  */
 export function initializeDraggable(container: HTMLElement) {
