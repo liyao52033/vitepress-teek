@@ -17,4 +17,4 @@ inCatalogue: false
 footer: false
 ---
 
-<About/>
+<About></About>

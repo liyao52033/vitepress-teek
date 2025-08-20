@@ -1,6 +1,6 @@
-<script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import secureInfo from "../../../../secureInfo";
+<script lang="ts" setup>
+import { onBeforeUnmount, onMounted, ref } from "vue";
+import secureInfo from "@/secureInfo";
 
 // 存储位置信息的键名
 const POSITION_STORAGE_KEY = 'coze-button-position';

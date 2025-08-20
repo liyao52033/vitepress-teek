@@ -1,9 +1,14 @@
-<script setup>
-import { onMounted, onBeforeUnmount } from 'vue';
-import secureInfo from '../../../../secureInfo';
-import { initializeDraggable } from './cozeUtils';
+<script lang="ts" setup>
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { useRouter } from "vitepress";
+import secureInfo from '@/secureInfo';
+import { initializeDraggable, updateAccessToken, updateRefreshToken } from './cozeUtils';
+import { ElMessage } from "element-plus";
 
+const router = useRouter();
 const POSITION_STORAGE_KEY = 'coze-button-position';
+
+const accessToken = ref("123456");
 
 // 判断是否移动端
 const isMobile = window.matchMedia('(pointer: coarse)').matches;
@@ -17,26 +22,31 @@ const SNAP_DISTANCE_PX = isMobile ? 50 : 20;
 // 初始底部距离 px (影响初始 top 计算)
 const BOTTOM_SAFE_AREA_PX = isMobile ? 86 : 96;
 
+// 保存 resize 处理函数的引用
+let handleResize = null;
+
 // 保存和读取的位置结构改成 leftRatio 和 topRatio
 const getSavedPosition = () => {
   try {
     const posStr = localStorage.getItem(POSITION_STORAGE_KEY);
     if (posStr) return JSON.parse(posStr);
-  } catch (e) {
+  }
+  catch (e) {
     console.error('读取保存的位置失败:', e);
   }
   return null;
 };
 
-const savePosition = (pos) => {
+const savePosition = (pos: any) => {
   try {
     localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify(pos));
-  } catch (e) {
+  }
+  catch (e) {
     console.error('保存位置失败:', e);
   }
 };
 
-const setupDraggable = (button) => {
+const setupDraggable = (button: HTMLElement) => {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
 
@@ -62,8 +72,8 @@ const setupDraggable = (button) => {
   topPx = Math.min(Math.max(0, topPx), vh - button.offsetHeight);
 
   button.style.position = 'fixed';
-  button.style.left = `${leftPx / rootFontSize}rem`;
-  button.style.top = `${topPx / rootFontSize}rem`;
+  button.style.left = `${ leftPx / rootFontSize }rem`;
+  button.style.top = `${ topPx / rootFontSize }rem`;
   button.style.right = 'auto';
   button.style.bottom = 'auto';
   button.style.transform = 'none';
@@ -76,7 +86,7 @@ const setupDraggable = (button) => {
   let btnStartTopPx = topPx;
   let lastDragTime = 0;
 
-  const onMouseDown = (e) => {
+  const onMouseDown = (e: any) => {
     e.preventDefault();
     dragging = true;
     moved = false;
@@ -91,7 +101,7 @@ const setupDraggable = (button) => {
     window.addEventListener('mouseup', onMouseUp);
   };
 
-  const onMouseMove = (e) => {
+  const onMouseMove = (e: any) => {
     if (!dragging) return;
     const now = Date.now();
     if (now - lastDragTime < DRAG_THROTTLE_MS) return;
@@ -118,11 +128,11 @@ const setupDraggable = (button) => {
     if (newTop < SNAP_DISTANCE_PX) newTop = 0;
     if (vh - (newTop + button.offsetHeight) < SNAP_DISTANCE_PX) newTop = vh - button.offsetHeight;
 
-    button.style.left = `${newLeft / rootFontSize}rem`;
-    button.style.top = `${newTop / rootFontSize}rem`;
+    button.style.left = `${ newLeft / rootFontSize }rem`;
+    button.style.top = `${ newTop / rootFontSize }rem`;
   };
 
-  const onMouseUp = (e) => {
+  const onMouseUp = (e: any) => {
     if (!dragging) return;
     dragging = false;
 
@@ -139,7 +149,7 @@ const setupDraggable = (button) => {
     window.removeEventListener('mouseup', onMouseUp);
 
     if (moved && (Math.abs(e.clientX - startX) > 10 || Math.abs(e.clientY - startY) > 10)) {
-      const onClickPrevent = (clickEvent) => {
+      const onClickPrevent = (clickEvent: any) => {
         clickEvent.stopImmediatePropagation();
         button.removeEventListener('click', onClickPrevent, true);
       };
@@ -155,10 +165,11 @@ const setupDraggable = (button) => {
 };
 
 let mutationObserver = null;
+
 function setupButtonObserver() {
   if (mutationObserver) mutationObserver.disconnect();
   mutationObserver = new MutationObserver(() => {
-    const button = document.querySelector('.ab1ac9d9bab12da47298');
+    const button = document.querySelector('.ab1ac9d9bab12da47298') as HTMLElement | null;
     if (button) {
       setupDraggable(button);
       ensureButtonInViewport();
@@ -206,7 +217,7 @@ const injectInitialStyles = () => {
 };
 
 const ensureButtonInViewport = () => {
-  const button = document.querySelector('.ab1ac9d9bab12da47298');
+  const button = document.querySelector('.ab1ac9d9bab12da47298') as HTMLElement | null;
   if (!button) return;
   if (isMobile) return;
   const rect = button.getBoundingClientRect();
@@ -221,20 +232,36 @@ const ensureButtonInViewport = () => {
   if (rect.right > vw) newLeft = vw - rect.width;
   if (rect.bottom > vh) newTop = vh - rect.height;
 
-  button.style.left = `${newLeft / rootFontSize}rem`;
-  button.style.top = `${newTop / rootFontSize}rem`;
+  button.style.left = `${ newLeft / rootFontSize }rem`;
+  button.style.top = `${ newTop / rootFontSize }rem`;
   button.style.position = 'fixed';
   button.style.right = 'auto';
   button.style.bottom = 'auto';
   button.style.transform = 'none';
 };
 
-onMounted(() => {
+
+onMounted(async () => {
+
+  // 获取授权页传过来的access_token
+  const params = new URLSearchParams(window.location.search);
+  const getTokenFromCallback = params.get('access_token');
+  if (params.get('access_token')) {
+    accessToken.value = getTokenFromCallback;
+    localStorage.setItem('coze_oauth_state', JSON.stringify({ accessToken: getTokenFromCallback }));
+    await router.go('/').then(() => {
+      ElMessage.success('授权成功，请开始使用吧')
+    })
+  }
+
+  // 确保获取最新的访问令牌
+  await updateAccessToken(accessToken.value);
+
   injectInitialStyles();
   setupButtonObserver();
 
-  const handleResize = () => {
-    const button = document.querySelector('.ab1ac9d9bab12da47298');
+  handleResize = () => {
+    const button = document.querySelector('.ab1ac9d9bab12da47298') as HTMLElement | null;
     if (!button) return;
     if (isMobile) {
       // 移动端保持由 CSS 控制的右下角位置
@@ -257,8 +284,8 @@ onMounted(() => {
       leftPx = Math.min(Math.max(0, leftPx), vw - button.offsetWidth);
       topPx = Math.min(Math.max(0, topPx), vh - button.offsetHeight);
 
-      button.style.left = `${leftPx / rootFontSize}rem`;
-      button.style.top = `${topPx / rootFontSize}rem`;
+      button.style.left = `${ leftPx / rootFontSize }rem`;
+      button.style.top = `${ topPx / rootFontSize }rem`;
       button.style.position = 'fixed';
       button.style.right = 'auto';
       button.style.bottom = 'auto';
@@ -267,7 +294,6 @@ onMounted(() => {
   };
 
   window.addEventListener('resize', handleResize);
-  onBeforeUnmount(() => window.removeEventListener('resize', handleResize));
 
   const sdkUrl = 'https://sf-cdn.coze.com/obj/unpkg-va/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/oversea/index.js';
   const script = document.createElement('script');
@@ -275,31 +301,39 @@ onMounted(() => {
   script.type = 'text/javascript';
 
   script.onload = () => {
-    if (window.CozeWebSDK && window.CozeWebSDK.WebChatClient) {
+    if (window?.CozeWebSDK?.WebChatClient) {
+      // 创建一个函数来初始化 WebChatClient，确保获取最新的 token
       new window.CozeWebSDK.WebChatClient({
         config: {
           bot_id: secureInfo.botId,
         },
         auth: {
           type: 'token',
-          token: secureInfo.botAccessToken,
-          onRefreshToken: () => secureInfo.botAccessToken,
+          // 确保令牌带有 Bearer 前缀
+          token: accessToken.value,
+          onRefreshToken: () => updateRefreshToken()
+        },
+        userInfo: {
+          url: 'https://vp.teek.top/teek-logo-large.png',
+          nickname: 'liyao52033',
         },
         ui: {
           chatBot: {
             title: '博客问答助手',
+            width: 500,
             uploadable: true,
+            isNeedAudio: false,
             isNeedAddNewConversation: true,
             isNeedFunctionCallMessage: true,
             isNeedQuote: true,
             onShow: () => {
-              const button = document.querySelector('.ab1ac9d9bab12da47298');
+              const button = document.querySelector('.ab1ac9d9bab12da47298') as HTMLElement | null;
               if (button) {
                 setupDraggable(button);
                 ensureButtonInViewport();
               }
               setTimeout(() => {
-                const chatContainer = document.querySelector('.fa8097ff55eabaa5782b');
+                const chatContainer = document.querySelector('.fa8097ff55eabaa5782b') as HTMLElement | null;
                 if (!isMobile && chatContainer && chatContainer.style.display !== 'none') {
                   initializeDraggable(chatContainer);
                 }
@@ -324,7 +358,16 @@ onMounted(() => {
   script.onerror = () => console.error('Coze SDK 加载失败');
   document.body.appendChild(script);
 });
+
+onBeforeUnmount(() => {
+  if (handleResize) {
+    window.removeEventListener('resize', handleResize);
+  }
+  if (mutationObserver) {
+    mutationObserver.disconnect();
+  }
+});
 </script>
 
-<template> 
+<template>
 </template>

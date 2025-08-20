@@ -1,11 +1,11 @@
 import { defineConfig } from 'vitepress'
 import secureInfo from '../secureInfo'
-import { generatedSidebar, generatedRewrites } from 'vitepress-plugin-sidebar-permalink'
+import { generatedRewrites, generatedSidebar } from 'vitepress-plugin-sidebar-permalink'
 import { FooterInfo } from "./footer"
 import baseConfig from "vitepress-theme-base-teek/config";
 import rewritesJson from '../rewrites.json'
-import { toSidebarNavItems, nav } from "./nav"
-
+import { nav, toSidebarNavItems } from "./nav"
+import path from "path";
 
 const tkConfig = baseConfig({
     webSiteInfo: {
@@ -65,9 +65,11 @@ const tkConfig = baseConfig({
 export default defineConfig({
     extends: tkConfig,
     title: "VitePress",
+    lang: "zh-CN",
     description: "A VitePress Site",
     head: [
         ['link', { rel: 'icon', href: 'favicon.ico' }],
+        ['script', { src: '//at.alicdn.com/t/c/font_5002477_3r8q6p0a9n8.js' }],
         [
             "meta",
             {
@@ -86,6 +88,24 @@ export default defineConfig({
     vite: {
         build: {
             chunkSizeWarningLimit: 2000,
+        },
+        server: {
+            proxy: {
+                // 当前端请求 /coze 的时候，就代理到 http://localhost:3000
+                '/coze': {
+                    // target: 'https://vp.xiaoying.org.cn',
+                    target: 'http://localhost:3000',
+                    changeOrigin: true
+                },
+            },
+        },
+        resolve: {
+            alias: [
+                {
+                    find: '@',
+                    replacement: path.resolve(__dirname, '../') // 指向 docs
+                }
+            ]
         }
     },
     rewrites: generatedRewrites,
