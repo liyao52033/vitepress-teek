@@ -1,9 +1,9 @@
 <!-- 欢迎卡片组件 -->
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, computed } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 // 按需导入 Element Plus 组件
-import { ElSkeleton, ElCard, ElDivider, ElTag, ElIcon } from "element-plus/es";
-import { Calendar, Clock, Monitor, Cpu, Cellphone, Timer } from '@element-plus/icons-vue';
+import { ElCard, ElDivider, ElIcon, ElSkeleton, ElTag } from "element-plus/es";
+import { Calendar, Cellphone, Clock, Cpu, Monitor, Timer } from '@element-plus/icons-vue';
 
 // ------------------ 系统信息 Hook ------------------
 function useSystemInfo() {
@@ -44,7 +44,6 @@ function useSystemInfo() {
       
       if (ua.indexOf('Windows') > -1) osInfo = 'Windows';
       else if (ua.indexOf('Mac') > -1) osInfo = 'macOS';
-      else if (ua.indexOf('Linux') > -1) osInfo = 'Linux';
       else if (ua.indexOf('Android') > -1) osInfo = 'Android';
       else if (ua.indexOf('iOS') > -1 || ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1) osInfo = 'iOS';
       
@@ -62,13 +61,16 @@ function useSystemInfo() {
         if (window.performance.now) {
           // 使用 performance.now() 获取更准确的时间
           pageLoadTime = Math.round(window.performance.now() / 10) / 100;
-        } else if (window.performance.timing) {
-          // 兼容旧版API
-          const timing = window.performance.timing;
-          if (timing.loadEventEnd > 0) {
-            pageLoadTime = Math.round((timing.loadEventEnd - timing.navigationStart) / 10) / 100;
-          } else {
-            pageLoadTime = 0.01; // 设置一个默认值，避免显示"计算中..."
+        } else if (window.performance.getEntriesByType) {
+          // 使用新的 PerformanceNavigationTiming API
+          const entries = window.performance.getEntriesByType('navigation');
+          if (entries.length > 0) {
+            const navigationEntry = entries[0] as PerformanceNavigationTiming;
+            if (navigationEntry.loadEventEnd > 0) {
+              pageLoadTime = Math.round((navigationEntry.loadEventEnd - navigationEntry.startTime) / 10) / 100;
+            } else {
+              pageLoadTime = 0.01; // 设置一个默认值，避免显示"计算中..."
+            }
           }
         }
       }

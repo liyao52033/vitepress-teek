@@ -77,31 +77,6 @@ export function initializeDraggable(container: HTMLElement) {
 }
 
 /**
- * 保存和读取位置的工具函数
- */
-const POSITION_STORAGE_KEY = 'coze-button-position';
-
-export const getSavedPosition = () => {
-    try {
-        const posStr = localStorage.getItem(POSITION_STORAGE_KEY);
-        if (posStr) return JSON.parse(posStr);
-    }
-    catch (e) {
-        console.error('读取保存的位置失败:', e);
-    }
-    return null;
-};
-
-export const savePosition = (pos: any) => {
-    try {
-        localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify(pos));
-    }
-    catch (e) {
-        console.error('保存位置失败:', e);
-    }
-};
-
-/**
  * 获取 Cookie 值的工具函数
  * @param name Cookie 名称
  * @returns Cookie 值或 null
@@ -116,6 +91,7 @@ export const getCookieValue = (name: string) => {
 };
 
 
+// 设置 Cookie 值
 export function setCookie(token: string) {
     if (!token) return;
 
@@ -168,13 +144,10 @@ export const updateRefreshToken = async () => {
 
         const res = await axios.post(
             "/coze/refresh_token",
-            {
-                refresh_token: token,
-            },
+            { refresh_token: token, },
             {
                 headers: { "Content-Type": "application/json" },
-            }
-        );
+            });
 
         const data = res.data;
 
@@ -186,10 +159,7 @@ export const updateRefreshToken = async () => {
 
         // 正常更新 token
         setCookie(data.refresh_token);
-        localStorage.setItem(
-            "coze_oauth_state",
-            JSON.stringify({ accessToken: data.access_token })
-        );
+        localStorage.setItem('coze_oauth_state', JSON.stringify({ accessToken: data.accessToken }));
 
         return data.access_token;
     }

@@ -93,8 +93,8 @@ export default defineConfig({
             proxy: {
                 // 当前端请求 /coze 的时候，就代理到 http://localhost:3000
                 '/coze': {
-                    // target: 'https://vp.xiaoying.org.cn',
-                    target: 'http://localhost:3000',
+                    target: 'https://vp.xiaoying.org.cn',
+                    //  target: 'http://localhost:3000',
                     changeOrigin: true
                 },
             },

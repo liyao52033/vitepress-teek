@@ -309,7 +309,6 @@ onMounted(async () => {
         },
         auth: {
           type: 'token',
-          // 确保令牌带有 Bearer 前缀
           token: accessToken.value,
           onRefreshToken: () => updateRefreshToken()
         },
