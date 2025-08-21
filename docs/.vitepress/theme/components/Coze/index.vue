@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import secureInfo from '@/secureInfo';
-import { initializeDraggable, updateAccessToken, updateRefreshToken } from './cozeUtils';
+import { getState, initializeDraggable, updateAccessToken, updateRefreshToken } from './cozeUtils';
 
 const POSITION_STORAGE_KEY = 'coze-button-position';
 const accessToken = ref("123456")
@@ -238,6 +238,8 @@ const ensureButtonInViewport = () => {
 
 
 onMounted(async () => {
+  
+  await getState()
 
   injectInitialStyles();
   setupButtonObserver();

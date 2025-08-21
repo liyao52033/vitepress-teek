@@ -76,18 +76,65 @@ export function initializeDraggable(container: HTMLElement) {
     });
 }
 
+// 设置 Cookie 值
+export function setCookie(token: string) {
+    if (!token) return;
+
+    const maxAge = 30 * 24 * 60 * 60; // 30天
+    document.cookie = `coze_state=${ encodeURIComponent(token) }; Path=/; max-age=${ maxAge }; SameSite=Strict; Secure; Cross-Site=Strict; Partitioned`;
+}
+
+/**
+ * 获取 Cookie 值的工具函数
+ * @param name Cookie 名称
+ * @returns Cookie 值或 null
+ */
+export const getCookie = (name: string) => {
+    const value = `; ${ document.cookie }`;
+    const parts = value.split(`; ${ name }=`);
+    if (parts.length === 2) {
+        return parts.pop()?.split(";").shift() || null;
+    }
+    return null;
+};
+
+// 获取 state
+export const getState = async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const state = urlParams.get('state');
+
+    if (state) {
+        setCookie(state);
+
+        // 移除state参数
+        urlParams.delete('state');
+        const newSearch = urlParams.toString();
+        // 构建新的URL
+        const newUrl = newSearch
+            ? `${ window.location.pathname }?${ newSearch }`
+            : window.location.pathname;
+
+        // 替换历史记录，不刷新页面更新URL
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
+    return state;
+}
 
 // 获取 access_token 最新的值
 export const updateAccessToken = async () => {
     try {
 
-        const response = await axios.get("/coze/get_accessToken");
+        const state = getCookie('coze_state');
+        const response = await axios.get(`/coze/get_accessToken?state=${ state }`);
         const newAccessToken = response.data?.access_token;
         if (!newAccessToken) return null;
         return newAccessToken;
     }
-    catch (error) {
-        throw error; // 抛出错误，让外部捕获处理
+    catch (err) {
+        if (axios.isAxiosError(err)) {
+            console.error("请求失败：", err.response?.status, err.response?.data);
+        }
     }
 };
 
@@ -96,7 +143,8 @@ export const updateAccessToken = async () => {
 export const getRefreshToken = async () => {
     try {
         // 调用接口获取响应（接口返回格式：{ refresh_token: "实际令牌值" }）
-        const response = await axios.get("/coze/get_refreshToken");
+        const state = getCookie('coze_state');
+        const response = await axios.get(`/coze/get_refreshToken?state=${ state }`);
 
         // 从响应中提取 refresh_token 字段
         // 注意：如果接口未找到令牌，会返回空响应（而非 { refresh_token: null }）
@@ -110,19 +158,23 @@ export const getRefreshToken = async () => {
         // 返回提取到的有效令牌
         return newRefreshToken;
     }
-    catch (error) {
-        throw error; // 抛出错误，让外部捕获处理
+    catch (err) {
+        if (axios.isAxiosError(err)) {
+            console.error("请求失败：", err.response?.status, err.response?.data);
+        }
     }
 };
 
 // 通过 refreshToken 刷新 accessToken
 export const updateRefreshToken = async () => {
     try {
+
         const token = await getRefreshToken();
 
+        const state = getCookie('coze_state');
         const res = await axios.post(
             "/coze/refresh_token",
-            { refresh_token: token, },
+            { refresh_token: token, state: state },
             {
                 headers: { "Content-Type": "application/json" },
             });
@@ -131,6 +183,7 @@ export const updateRefreshToken = async () => {
 
         // 严格校验：必须同时存在 access_token 和 refresh_token
         if (!data?.access_token || !data?.refresh_token) {
+
             window.location.href = "/coze";
             return null;
         }

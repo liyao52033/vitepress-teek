@@ -223,7 +223,6 @@ const setupButtonChangeObserver = () => {
       if (button) {
         // 检查按钮是否已经有我们的事件监听器
         if (!button.hasAttribute('data-position')) {
-          console.log('检测到按钮DOM变化，重新应用位置和事件');
           applyPosition(currentPositionId.value, button);
           
           // 如果菜单存在，重新绑定事件
