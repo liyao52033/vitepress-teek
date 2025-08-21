@@ -1,14 +1,10 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { useRouter } from "vitepress";
 import secureInfo from '@/secureInfo';
 import { initializeDraggable, updateAccessToken, updateRefreshToken } from './cozeUtils';
-import { ElMessage } from "element-plus";
 
-const router = useRouter();
 const POSITION_STORAGE_KEY = 'coze-button-position';
-
-const accessToken = ref("123456");
+const accessToken = ref("123456")
 
 // 判断是否移动端
 const isMobile = window.matchMedia('(pointer: coarse)').matches;
@@ -243,20 +239,6 @@ const ensureButtonInViewport = () => {
 
 onMounted(async () => {
 
-  // 获取授权页传过来的access_token
-  const params = new URLSearchParams(window.location.search);
-  const getTokenFromCallback = params.get('access_token');
-  if (params.get('access_token')) {
-    accessToken.value = getTokenFromCallback;
-    localStorage.setItem('coze_oauth_state', JSON.stringify({ accessToken: getTokenFromCallback }));
-    await router.go('/').then(() => {
-      ElMessage.success('授权成功，请开始使用吧')
-    })
-  }
-
-  // 确保获取最新的访问令牌
-  await updateAccessToken(accessToken.value);
-
   injectInitialStyles();
   setupButtonObserver();
 
@@ -325,6 +307,9 @@ onMounted(async () => {
             isNeedAddNewConversation: true,
             isNeedFunctionCallMessage: true,
             isNeedQuote: true,
+            onBeforeShow: async () => {
+              accessToken.value = await updateAccessToken()
+            },
             onShow: () => {
               const button = document.querySelector('.ab1ac9d9bab12da47298') as HTMLElement | null;
               if (button) {

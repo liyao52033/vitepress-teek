@@ -76,64 +76,42 @@ export function initializeDraggable(container: HTMLElement) {
     });
 }
 
-/**
- * 获取 Cookie 值的工具函数
- * @param name Cookie 名称
- * @returns Cookie 值或 null
- */
-export const getCookieValue = (name: string) => {
-    const value = `; ${ document.cookie }`;
-    const parts = value.split(`; ${ name }=`);
-    if (parts.length === 2) {
-        return parts.pop()?.split(";").shift() || null;
-    }
-    return null;
-};
 
-
-// 设置 Cookie 值
-export function setCookie(token: string) {
-    if (!token) return;
-
-    // path=/ 保证和插件写的一致，覆盖即可
-    const maxAge = 30 * 24 * 60 * 60; // 30天
-    document.cookie = `refresh_token=${ encodeURIComponent(token) }; Path=/; max-age=${ maxAge }; SameSite=Strict; Secure; Cross-Site=Strict; Partitioned`;
-}
-
-
-// 创建更新 accessToken 的方法，确保能获取到异步函数的最新值
-export const updateAccessToken = async (token: string) => {
+// 获取 access_token 最新的值
+export const updateAccessToken = async () => {
     try {
-        // 获取本地的access_token
-        const storeToken = localStorage.getItem('coze_oauth_state');
-        if (!storeToken) return null;
-        const localToken = JSON.parse(storeToken);
-        if (localToken && localToken?.accessToken) {
-            token = localToken.accessToken
-            return token;
-        }
-        return null
 
+        const response = await axios.get("/coze/get_accessToken");
+        const newAccessToken = response.data?.access_token;
+        if (!newAccessToken) return null;
+        return newAccessToken;
     }
     catch (error) {
-
-        throw error;
-
+        throw error; // 抛出错误，让外部捕获处理
     }
 };
+
 
 // 获取 refreshToken 最新的值
 export const getRefreshToken = async () => {
     try {
-        const cookieValue = getCookieValue('refresh_token');
-        if (cookieValue) {
-            return cookieValue;
-        }
-        return null;
+        // 调用接口获取响应（接口返回格式：{ refresh_token: "实际令牌值" }）
+        const response = await axios.get("/coze/get_refreshToken");
+
+        // 从响应中提取 refresh_token 字段
+        // 注意：如果接口未找到令牌，会返回空响应（而非 { refresh_token: null }）
+        const newRefreshToken = response.data?.refresh_token;
+
+        // 处理两种无令牌的情况：
+        // 1. 接口返回空响应（response.data 不存在）
+        // 2. 接口返回了数据，但 refresh_token 字段为空
+        if (!newRefreshToken) return null; // 返回默认令牌
+
+        // 返回提取到的有效令牌
+        return newRefreshToken;
     }
     catch (error) {
-
-        return null;
+        throw error; // 抛出错误，让外部捕获处理
     }
 };
 
@@ -156,10 +134,6 @@ export const updateRefreshToken = async () => {
             window.location.href = "/coze";
             return null;
         }
-
-        // 正常更新 token
-        setCookie(data.refresh_token);
-        localStorage.setItem('coze_oauth_state', JSON.stringify({ accessToken: data.accessToken }));
 
         return data.access_token;
     }
