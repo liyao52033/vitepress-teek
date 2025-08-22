@@ -590,7 +590,7 @@ export interface Plugins {
 
 export interface LoginInfo {
   /**
-   * 是否已登录
+   * 是否全局登录
    */
   isLogin?: boolean;
   /**
@@ -613,6 +613,10 @@ export interface LoginInfo {
    * 过期时间
    */
   expiration?: number;
+  /**
+   * 登录方式
+   */
+  type?: 'node' | 'local';
 }
 
 

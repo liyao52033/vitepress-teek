@@ -16,7 +16,8 @@ const tkConfig = baseConfig({
         username: secureInfo.username, // 登录用户名
         password: secureInfo.password, // 登录密码
         token: Math.random().toString(32).slice(2) + Math.round(new Date().getTime() / 1000),
-        expiration: 0.5  // token过期时间，单位：天
+        expiration: 0.5,  // token过期时间，单位：天,
+       // type: 'node'
     },
     articleTip: {
         articleTopTip: (frontmatter) => {
@@ -88,6 +89,14 @@ export default defineConfig({
     vite: {
         build: {
             chunkSizeWarningLimit: 1500,
+        },
+        server: {
+            proxy: {
+                '/coze': {
+                    target: 'http://localhost:3000',
+                    changeOrigin: true
+                }
+            }
         }
     },
     rewrites: generatedRewrites,

@@ -9,9 +9,12 @@ import icpRecordSvg from "../../../assets/svg/icpRecord";
 import securityRecordImg from "../../../assets/img/securityRecord.png";
 import { Icon } from "../../";
 import { FooterInfo, Social } from "../../../config/types";
+import { useRoute } from 'vitepress';
 
 defineOptions({ name: "Footer" });
 
+const route = useRoute();
+const showFooter = route.path !== '/404';
 const ns = useNamespace("footer");
 
 const { theme, frontmatter } = useUnrefData();
@@ -51,7 +54,7 @@ const footerData = computed(() => {
 </script>
 
 <template>
-  <div class="VPDoc container content">
+  <div class="VPDoc container content" v-if="showFooter">
     <div v-if="footerInfo || social.length" :class="[ns.b(), ns.joinNamespace('wallpaper-outside')]">
       <div v-if="social.length" :class="`${ns.e('icons')} flx-center`">
         <a v-for="(item, index) in social" :key="index" :href="item.link" :title="item.name" target="_blank">

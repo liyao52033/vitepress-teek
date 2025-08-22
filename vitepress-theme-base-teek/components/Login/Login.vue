@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { LoginForm } from "./helper";
-import { STORAGE_KEY } from "./helper";
 import { markRaw, onMounted, reactive, ref } from "vue";
 import { useNamespace, useLoginForm } from "../../hooks";
 import { useRouter } from "vitepress";
@@ -11,6 +10,8 @@ import currentDate from "./Date.vue";
 import { LoginInfo } from "../../config/types"
 import { useUnrefData } from "../configProvider"
 import Icon from "../Icon";
+// 导入拆分的登录服务
+import { loginService } from "./loginService";
 
 defineOptions({ name: "LoginPage" });
 
@@ -31,7 +32,8 @@ const {
   username = "",
   password =  "",
   token = "",
-  expiration = 0.5
+  expiration = 0.5,
+  type = "local"
 }: LoginInfo = { ...theme.loginInfo, ...frontmatter?.loginInfo };
 
 const loginForm = reactive<LoginForm>({
@@ -57,30 +59,36 @@ const loginForm = reactive<LoginForm>({
     errorModel: false,
     icon: warningFilledIcon,
     placeholder: "请输入验证码",
-    // 这里的 appendModel 是为了和 TkVerifyCode 组件进行双向绑定
     type: "text",
     append: markRaw(TkVerifyCode),
     appendModel: imgCode,
   },
 });
 
-
-function login() {
-  formRef.value?.validate((valid) => {
+// 修改登录方法，调用拆分的服务
+async function login() {
+  formRef.value?.validate(async (valid) => {
     if (valid) {
       const redirect = redirectPath.value || "/";
-      if (formModel.username === username && formModel.password === password) {
-        const data = JSON.stringify({
-          name: loginForm.username,
-          time: Math.round(Date.now() / 1000),
-          expire: 86400 * expiration,
-          accesskey: token,
-        });
-        localStorage.setItem(STORAGE_KEY, data);
-        router.go(redirect);
-        ElMessage.success("登录成功");
-      } else {
-        ElMessage.error("账号或密码错误!");
+      try {
+        const loginMethod = type === 'node' ? loginService.nodeLogin : loginService.localLogin;
+        const result = await loginMethod(
+            formModel.username,
+            formModel.password,
+            { username, password, token, expiration}
+        );
+
+        if (result.success) {
+          ElMessage.success(result.message);
+          // 确保路径是有效的，并且不是登录页面本身
+          const targetPath = redirect === '/login' ? '/' : redirect;
+          await router.go(targetPath);
+        } else {
+          ElMessage.error(result.message);
+        }
+      } catch (error) {
+        console.error("登录失败:", error);
+        ElMessage.error("登录过程出错，请重试");
       }
     } else {
       ElMessage.error("请完善表单内容！");
@@ -93,7 +101,12 @@ onMounted(() => {
   const url = new URL(window.location.href);
   const redirect = url.searchParams.get('redirect');
   if (redirect) {
-    redirectPath.value = decodeURIComponent(redirect);
+    try {
+      // 解码重定向路径
+      redirectPath.value = decodeURIComponent(redirect);
+    } catch (e) {
+      redirectPath.value = "/";
+    }
   } else if (document.referrer && !document.referrer.includes('/login')) {
     try {
       const refUrl = new URL(document.referrer);
@@ -101,8 +114,6 @@ onMounted(() => {
     } catch { }
   }
 });
-
-
 </script>
 
 
@@ -110,12 +121,12 @@ onMounted(() => {
   <div :class="ns.b()" aria-label="登录页面">
     <div :class="ns.e('wrapper')">
       <div :class="ns.e('left')">
-        <img src="../../assets/img/bg-1.png" alt="login" />
+        <img src="./assets/bg-1.png" alt="login" />
       </div>
 
       <div :class="ns.e('right')">
         <div :class="[ns.e('right__header'), 'flx-center']">
-          <img src="../../assets/img/teek.png" alt="logo" />
+          <img src="./assets/teek.png" alt="logo" />
           <h2>欢迎登录</h2>
           <currentDate />
         </div>

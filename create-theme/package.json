@@ -1,6 +1,6 @@
 {
 	"name": "create-base-teek-theme",
-	"version": "1.4.5",
+	"version": "1.4.7",
 	"type": "module",
 	"repository": "git@github.com:liyao52033/vitepress-teek.git",
 	"homepage": "https://github.com/liyao52033/vitepress-teek/tree/npm",
