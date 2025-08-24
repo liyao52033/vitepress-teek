@@ -12,7 +12,17 @@ defineOptions({ name: "HomePostItem" });
 
 const ns = useNamespace("postItem");
 
-const { post = { url: "", frontmatter: {} } } = defineProps<{ post: TkContentData }>();
+const {
+  post = {
+    url: "",
+    relativePath: "" ,
+    frontmatter: {
+      description: "",
+      capture: "",
+      coverImg: "",
+      sticky: ""
+    }
+} } = defineProps<{ post: TkContentData }>();
 
 const { frontmatter, theme } = useUnrefData();
 
@@ -26,7 +36,7 @@ const {
 }: Post = { ...theme.post, ...frontmatter.tk?.post };
 const { showInfo = true }: Article = { ...theme.article, ...frontmatter.tk?.article };
 
-const excerpt = post.frontmatter.description || post.excerpt || (showCapture && post.capture);
+const excerpt = post.frontmatter?.description || post.excerpt || (showCapture && post.capture);
 
 /**
  * 点击图片进行预览

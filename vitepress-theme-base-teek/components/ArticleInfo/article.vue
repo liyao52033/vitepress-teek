@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { User, Calendar, FolderOpened, CollectionTag } from "@element-plus/icons-vue";
 import { useRoute } from "vitepress";
-import { computed, unref, ref, watch } from "vue";
+import { computed, unref } from "vue";
 import { formatDate, isFunction } from "../../helper";
 import { TkContentData } from "../../post/types";
 import { useNamespace } from "../../hooks";
@@ -10,12 +10,13 @@ import { PostBaseInfoProps } from "./types";
 import { Icon } from "../Icon";
 import { usePosts, useUnrefData } from "../configProvider";
 
+
 defineOptions({ name: "ArticleInfo" });
 
 const ns = useNamespace("articleInfo");
 
 // 接收父组件传入的参数
-const { scope, split = false } = defineProps<PostBaseInfoProps>();
+const { post, scope, split = false } = defineProps<PostBaseInfoProps>();
 
 // 获取全局配置和主题信息
 const { frontmatter, theme } = useUnrefData();
@@ -32,9 +33,6 @@ const {
 const posts = usePosts();
 const route = useRoute();
 
-// 响应式存储当前文章数据
-const currentPost = ref<TkContentData | null>();
-
 // 生成链接的工具函数：替换路径中的{data}占位符
 // 【修复1：确保返回值为string类型】
 const getHref = (path: string | ((url: string) => string) | undefined, data: string) => {
@@ -45,75 +43,56 @@ const getHref = (path: string | ((url: string) => string) | undefined, data: str
   return resolvedPath.replace('{data}', encodeURIComponent(data));
 };
 
-// 根据路由获取当前文章数据
-const getCurrentPostByRoute = () => {
-  const originPosts: TkContentData[] = unref(posts).originPosts || [];
-  return originPosts.find(item => 
-    [item.url, `${item.url}.md`].includes(`/${route.data.relativePath}`)
-  ) || null;
-};
-
 // 计算文章创建时间
-const calculateDate = () => {
-  if (currentPost.value?.frontmatter?.date) {
-    const date = currentPost.value.frontmatter.date;
+const date = computed(() => {
+  // 如果 date 是函数，则调用获取返回值作为 date
+  const date = post.date;
+  if (date) {
     if (isFunction(dateFormat)) return dateFormat(date);
     return formatDate(date, dateFormat);
   }
 
-  const fallbackDate = Date.now().toLocaleString();
-  return isFunction(dateFormat) ? dateFormat(fallbackDate) : formatDate(fallbackDate, dateFormat);
-};
+  // 如果 frontmatter 没有配置 date，则从 posts 中获取文档的创建时间
+  const originPosts: TkContentData[] = unref(posts).originPosts;
+  const targetPost = originPosts.filter(item => [item.url, `${item.url}.md`].includes(`/${route.data.relativePath}`));
 
-// 响应式存储日期值
-const dateValue = ref(calculateDate());
-
-// 监听路由变化，更新当前文章和日期
-watch(
-  () => route.path, 
-  () => {
-    currentPost.value = getCurrentPostByRoute();
-    dateValue.value = calculateDate();
-  },
-  { immediate: true }
-);
+  if (isFunction(dateFormat)) return dateFormat(targetPost[0]?.date || "");
+  return formatDate(targetPost[0]?.date || new Date(), dateFormat);
+});
 
 // 响应式生成文章信息列表
 const baseInfo = computed(() => {
-  const { frontmatter = {} } = currentPost.value || {};
-  const { categories, tags, author } = frontmatter;
-  
   return [
     {
       title: "作者",
       icon: User,
-      data: author?.name,
-      href: author?.link,
-      target: author?.link ? "_blank" : "_self",
+      data: post.frontmatter.author?.name,
+      href: post.frontmatter.author?.link,
+      target: post.author?.link ? "_blank" : "_self",
       show: showAuthor,
     },
     {
       title: "创建时间",
       icon: Calendar,
-      data: dateValue.value,
+      data: unref(date),
       href: "/archives",
       show: showDate,
     },
     {
       title: "分类",
       icon: FolderOpened,
-      dataList: categories || [],
+      dataList: post.frontmatter?.categories || [],
       href: "/categories?category={data}",
       class: "or",
-      show: (scope as string) === "home" || showCategory,
+      show: scope === "home" || showCategory,
     },
     {
       title: "标签",
       icon: CollectionTag,
-      dataList: tags || [],
+      dataList: post.frontmatter?.tags || [],
       href: "/tags?tag={data}",
       class: "or",
-      show: (scope as string) === "home" || showTag,
+      show: scope === "home" || showTag,
     },
   ];
 });

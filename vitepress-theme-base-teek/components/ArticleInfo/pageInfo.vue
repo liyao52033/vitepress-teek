@@ -1,5 +1,5 @@
 <script setup lang="ts" >
-import { computed, nextTick, onMounted, ref, unref } from "vue";
+import { computed, nextTick, onMounted, ref, unref, watch } from "vue";
 import { useRoute, useData } from "vitepress";
 import { Reading, Clock, View, PieChart } from "@element-plus/icons-vue";
 import { FileInfo } from "vitepress-plugin-doc-analysis";
@@ -9,7 +9,7 @@ import ArticleInfo from "./article.vue";
 import Icon from "../Icon/index"
 import { Article, DocAnalysis } from "../../config/types";
 import { TkContentData } from "../../post/types";
-import { useUnrefData } from "../configProvider";
+import { useUnrefData, usePosts } from "../configProvider";
 
 
 defineOptions({ name: "pageInfo" });
@@ -19,10 +19,24 @@ const ns = useNamespace("articleAnalyze");
 const { theme, frontmatter } = useUnrefData();
 const { theme: themeRef } = useData();
 
+// 获取文章列表和路由信息
+const posts = usePosts();
+const route = useRoute();
+
+// 响应式存储当前文章数据
+const currentPost = ref<TkContentData | null>();
+const getCurrentPostByRoute = () => {
+  const originPosts: TkContentData[] = unref(posts).originPosts || [];
+  return originPosts.find(item =>
+    [item.url, `${item.url}.md`].includes(`/${route.data.relativePath}`)
+  ) || null;
+};
+
 // 文章基本信息
 const post: TkContentData = {
   author: { ...theme.author, ...frontmatter.author },
-  date: frontmatter.date,
+  date: currentPost.value?.frontmatter.date,
+  relativePath: "",
   frontmatter: frontmatter,
   url: "",
 };
@@ -35,8 +49,6 @@ const {
   wordCount = true,
   readingTime = true
 }: DocAnalysis = { ...theme.docAnalysis, ...frontmatter.docAnalysis };
-
-const route = useRoute();
 
 // 文章阅读量、阅读时长、字数
 const pageViewInfo = computed(() => {
@@ -78,6 +90,16 @@ const teleportInfo = () => {
 onMounted(() => {
   nextTick(() => teleportInfo());
 });
+
+// 监听路由变化，更新当前文章和日期
+watch(
+  () => route.path,
+  () => {
+    currentPost.value = getCurrentPostByRoute();
+  },
+  { immediate: true }
+);
+
 </script>
 
 <template>
