@@ -1,11 +1,11 @@
 import { defineConfig } from 'vitepress'
-import secureInfo from '../secureInfo'
 import { generatedRewrites, generatedSidebar } from 'vitepress-plugin-sidebar-permalink'
 import { FooterInfo } from "./footer"
 import baseConfig from "vitepress-theme-base-teek/config";
 import rewritesJson from '../rewrites.json'
 import { nav, toSidebarNavItems } from "./nav"
 import path from "path";
+import secureInfo from "../secureInfo";
 
 const tkConfig = baseConfig({
     webSiteInfo: {
@@ -13,10 +13,9 @@ const tkConfig = baseConfig({
     },
     loginInfo: {
         isLogin: false, // 是否开启全局登录
-        username: secureInfo.username, // 登录用户名
-        password: secureInfo.password, // 登录密码
         token: Math.random().toString(32).slice(2) + Math.round(new Date().getTime() / 1000),
-        expiration: 0.5  // token过期时间，单位：天
+        expiration: 0.5,  // token过期时间，单位：天,
+        type: 'node'
     },
     articleTip: {
         articleTopTip: (frontmatter) => {
@@ -83,6 +82,13 @@ export default defineConfig({
                 name: "google",
                 content: "notranslate",
             },
+        ],
+        [
+            "meta",
+            {
+                name: "algolia-site-verification",
+                content: "CA4B71628D467FFC",
+            },
         ]
     ],
     vite: {
@@ -93,8 +99,8 @@ export default defineConfig({
             proxy: {
                 // 当前端请求 /coze 的时候，就代理到 http://localhost:3000
                 '/coze': {
-                    // target: 'https://vp.xiaoying.org.cn',
-                    target: 'http://localhost:3000',
+                    target: 'https://vp.xiaoying.org.cn',
+                    //   target: 'http://localhost:3000',
                     changeOrigin: true
                 },
             },
@@ -132,15 +138,23 @@ export default defineConfig({
         logo: '/img/logo.png',
         nav,
         sidebar: generatedSidebar,
+        // search: {
+        //     provider: 'local',
+        //     options: {
+        //         _render(src, env, md) {
+        //             const html = md.render(src, env)
+        //             if (env.frontmatter?.search === false) return ''
+        //             return html
+        //         }
+        //     }
+        // },
         search: {
-            provider: 'local',
+            provider: 'algolia',
             options: {
-                _render(src, env, md) {
-                    const html = md.render(src, env)
-                    if (env.frontmatter?.search === false) return ''
-                    return html
-                }
-            }
+                appId: secureInfo.appId,
+                apiKey: secureInfo.apiKey,
+                indexName: secureInfo.indexName
+            },
         },
         outline: {
             level: [2, 3],

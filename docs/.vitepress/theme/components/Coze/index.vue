@@ -195,6 +195,7 @@ const injectInitialStyles = () => {
     @media (max-width: 768px) {
       .ab1ac9d9bab12da47298,
       .ab1ac9d9bab12da47298.bc81871a44ea566dd738 {
+        display: none !important;
         width: 3.5rem !important;
         height: 3.5rem !important;
         right: -1.5rem !important;
@@ -204,6 +205,7 @@ const injectInitialStyles = () => {
     @media (max-width: 480px) {
       .ab1ac9d9bab12da47298,
       .ab1ac9d9bab12da47298.bc81871a44ea566dd738 {
+        display: none !important;
         width: 3.5rem !important;
         height: 3.5rem !important;
       }
