@@ -1,7 +1,7 @@
 import type { FileContentLoaderData } from "vitepress-plugin-file-content-loader";
 import { ThemeConfig } from "../config/types";
 
-export type ArticleInfoPosition = "post" | "article";
+export type ArticleInfoPosition = "home" | "article";
 
 export type TkContentData = FileContentLoaderData & {
   /**

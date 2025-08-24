@@ -49,8 +49,6 @@ export default {
             if(inBrowser){
                 NProgress.done() // 停止进度条
             }
-
-
         };
         const login = () => {
             if (router.route.path !== '/' && router.route.path !== '/login') {
