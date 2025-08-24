@@ -54,9 +54,8 @@ export default {
         };
         const login = () => {
             if (router.route.path !== '/' && router.route.path !== '/login') {
-                if ((isLogin || List.includes(router.route.path)) && !checkAuth(siteData.value.themeConfig.loginInfo)) {
-                    const redirectPath = encodeURIComponent(router.route.path);
-                    router.go(`/login?redirect=${redirectPath}`).then(r => {})
+                if ((isLogin || List.includes(router.route.path)) && !checkAuth()) {
+                    router.go(`/login?redirect=${ router.route.path }` || '/').then(r  => {})
                 }
             }
         }

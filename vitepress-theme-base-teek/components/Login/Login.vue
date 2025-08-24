@@ -101,12 +101,7 @@ onMounted(() => {
   const url = new URL(window.location.href);
   const redirect = url.searchParams.get('redirect');
   if (redirect) {
-    try {
-      // 解码重定向路径
-      redirectPath.value = decodeURIComponent(redirect);
-    } catch (e) {
-      redirectPath.value = "/";
-    }
+    redirectPath.value = decodeURIComponent(redirect);
   } else if (document.referrer && !document.referrer.includes('/login')) {
     try {
       const refUrl = new URL(document.referrer);

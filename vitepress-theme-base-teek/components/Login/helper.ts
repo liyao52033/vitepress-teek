@@ -1,42 +1,28 @@
 import type { Component, Ref } from "vue";
 import type { TkIconProps } from "../Icon";
-import { LoginInfo } from "../../config/types";
 
 // 定义存储键值
 export const STORAGE_KEY = 'employee-auth'
 
 /**
- * 判断当前时间是否比给定时间超过指定秒数
- * @param givenTime 给定时间（支持Date对象、时间字符串或时间戳）
- * @param seconds 要判断的秒数（必须为正数）
- * @returns 是否超过指定秒数
- * @throws 当输入无效时间或秒数为非正数时抛出错误
+ * 判断当前时间是否比给定的秒级时间戳超过43200秒（12小时）
+ * @param givenTimeSeconds 给定的秒级时间戳（如 Math.round(Date.now() / 1000) 的结果）
+ * @param seconds 差值秒数
+ * @returns 当前时间与给定时间的差值是否超过差值
+ * @throws 当输入的时间戳无效时抛出错误
  */
-function isMoreThanSeconds(givenTime: Date | string | number, seconds: number): boolean {
-  // 验证秒数有效性
-  if (seconds <= 0 || isNaN(seconds)) {
-    throw new Error(`无效的秒数: ${seconds}（必须是正数）`);
+function isMoreThanSeconds(givenTimeSeconds: number, seconds: number): boolean {
+  // 验证输入的时间戳有效性
+  if (isNaN(givenTimeSeconds)) {
+    throw new Error(`无效的秒级时间戳: ${givenTimeSeconds}`);
   }
+  
+  // 获取当前时间的秒级时间戳
+  const currentTimeSeconds = Math.round(Date.now() / 1000);
 
-  // 尝试将输入转换为Date对象
-  const targetTime = new Date(givenTime);
-
-  // 验证时间有效性
-  if (isNaN(targetTime.getTime())) {
-    throw new Error(`无效的时间格式: ${givenTime}`);
-  }
-
-  // 获取当前时间和目标时间的时间戳（毫秒）
-  const currentTimeMs = Date.now();
-  const targetTimeMs = targetTime.getTime();
-
-  // 计算时间差（毫秒）并转换为秒
-  const timeDiffSeconds = (currentTimeMs - targetTimeMs) / 1000;
-
-  // 返回是否超过指定秒数
-  return timeDiffSeconds > seconds;
+  // 计算时间差并判断是否超过阈值
+  return currentTimeSeconds - givenTimeSeconds > seconds;
 }
-
 
 /**
  * 检查用户身份验证状态
@@ -48,13 +34,13 @@ function isMoreThanSeconds(givenTime: Date | string | number, seconds: number): 
  * 
  * @returns {boolean} 如果用户已通过身份验证且授权数据有效则返回true，否则返回false
  */
-export function checkAuth(loginInfo: LoginInfo): boolean {
+export function checkAuth(): boolean {
   // 从本地存储中获取授权数据
   const auth = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
   // 如果授权数据存在并且数据长度不为0，则授权验证通过
   if (auth && Object.keys(auth).length) {
     const { time, expire, accesskey } = auth
-    return !isMoreThanSeconds(time, expire) && (accesskey === loginInfo.token);
+    return !isMoreThanSeconds(time, expire) && accesskey;
   }
   
   

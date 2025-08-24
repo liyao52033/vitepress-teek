@@ -17,7 +17,7 @@ const tkConfig = baseConfig({
         password: secureInfo.password, // 登录密码
         token: Math.random().toString(32).slice(2) + Math.round(new Date().getTime() / 1000),
         expiration: 0.5,  // token过期时间，单位：天,
-       // type: 'node'
+        type: 'node'
     },
     articleTip: {
         articleTopTip: (frontmatter) => {

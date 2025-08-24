@@ -1,7 +1,18 @@
-import { TkContentData } from "../../post/types";
+import { ArticleInfoPosition, TkContentData } from "../../post/types";
 
 export interface PostBaseInfoProps {
+    /**
+     * 文章数据
+     */
     post: TkContentData;
-    scope: "home" | "article";
+    /**
+     * 父组件所在区域
+     */
+    scope: ArticleInfoPosition;
+    /**
+     * 是否显示分割线 |
+     *
+     * @default false
+     */
     split?: boolean;
 }

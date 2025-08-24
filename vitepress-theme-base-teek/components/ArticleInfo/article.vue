@@ -88,21 +88,21 @@ const baseInfo = [
       <div v-if="item.show && (item.data || item.dataList?.length)" :class="['flx-center', `${scope}-item`, { split }]">
         <Icon v-if="showIcon"><component :is="item.icon" /></Icon>
         <a
-          v-if="item.data"
-          :title="item.title"
-          :href="item.href"
-          :target="item.target"
-          :class="[item.class, 'hover-color']"
+            v-if="item.data"
+            :title="item.title"
+            :href="item.href"
+            :target="item.target"
+            :class="[item.class, 'hover-color']"
         >
           {{ item.data }}
         </a>
         <a
-          v-else
-          v-for="(data, index) in item.dataList"
-          :key="index"
-          :title="item.title"
-          :href="item.href?.replace('{data}', encodeURIComponent(data))"
-          :class="[item.class, 'hover-color']"
+            v-else
+            v-for="(data, index) in item.dataList"
+            :key="index"
+            :title="item.title"
+            :href="item.href?.replace('{data}', encodeURIComponent(data))"
+            :class="[item.class, 'hover-color']"
         >
           {{ data }}
         </a>

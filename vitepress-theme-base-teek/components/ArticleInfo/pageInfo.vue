@@ -33,8 +33,7 @@ const docAnalysisInfo = computed(() => unref(themeRef).docAnalysisInfo || {});
 const {
   pageView = true,
   wordCount = true,
-  readingTime = true,
-  pageIteration = 2000,
+  readingTime = true
 }: DocAnalysis = { ...theme.docAnalysis, ...frontmatter.docAnalysis };
 
 const route = useRoute();
