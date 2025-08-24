@@ -30,7 +30,7 @@ export default function baseConfig(config: ThemeConfig ): UserConfig {
 
   // 定义各插件扫描时忽略的目录
   const ignoreDir = {
-    autoFrontmatter: ["**/@pages/**", ".vite-cache", "**/pages/**"],
+    autoFrontmatter: [".vite-cache", "components", ".vitepress", "public", "node_modules"],
     sidebar: ["@pages", "@fragment", ".vite-cache", "pages"],
     categories: ["@fragment", "articles", ".vite-cache", "pages"],
     docAnalysis: ["@pages", /目录页/, ".vite-cache", "pages"],

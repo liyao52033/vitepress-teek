@@ -12,8 +12,8 @@ import {
 import { formatDate } from "../helper/date";
 import matter from "gray-matter";
 import type { FileContentLoaderData } from "vitepress-plugin-file-content-loader";
-import { basename, join } from "node:path";
-import { statSync } from "node:fs";
+import {  basename, join } from "node:path";
+import fs,{ statSync, readdirSync } from "node:fs";
 
 // ！该文件只在 node 环境运行，无法直接在浏览器环境运行，因此浏览器环境的代码不要引入该文件
 
@@ -34,6 +34,47 @@ const getTitleFromMd = (mdContent: string) => {
   return undefined;
 };
 
+/**
+ * 获取文章标题，获取顺序：frontmatter.title > md 文件开头的一级标题 > 文件名
+ *
+ * @param post 文章数据
+ */
+// @ts-ignore
+export function getTitle(post: RequiredKeyPartialOther<TkContentData, "frontmatter" | "url">) {
+  if (post.frontmatter.title) return post.frontmatter.title;
+
+  const { content = "" } = matter(post.src || "", {});
+  const splitName = basename(post.url).split(".");
+  // 如果目录下有 index.md 且没有一级标题，则使用目录名作为文章标题
+  const name = splitName.length > 1 ? splitName[1] : splitName[0];
+  return getTitleFromMd(content) || name || "";
+}
+
+// 递归查找文件
+function findRewritesJson(dir: any): string | null {
+  const files = readdirSync(dir);
+
+  // 遍历目录中的每个文件和子目录
+  for (const file of files) {
+    const fullPath = join(dir, file);
+    const stat = statSync(fullPath);
+
+    // 如果是文件并且是 rewrites.json
+    if (stat.isFile() && file === 'rewrites.json') {
+      return fullPath; // 返回找到的文件路径
+    }
+
+    // 如果是目录，则递归查找
+    if (stat.isDirectory()) {
+      const result = findRewritesJson(fullPath);
+      if (result) return result;
+    }
+  }
+
+  // 如果没有找到返回 null
+  return null;
+}
+
 
 /**
  * 转换为文章数据
@@ -48,6 +89,7 @@ export const transformData = (data: FileContentLoaderData): TkContentData => {
   return {
     url: frontmatter.permalink || url,
     frontmatter: frontmatter,
+    relativePath: data.relativePath,
     author: themeConfig.author,
     title: getTitle(data),
     date: getDate(data, siteConfig.srcDir),
@@ -104,21 +146,7 @@ const resolvePosts = (posts: TkContentData[]): Post => {
   };
 };
 
-/**
- * 获取文章标题，获取顺序：frontmatter.title > md 文件开头的一级标题 > 文件名
- *
- * @param post 文章数据
- */
-// @ts-ignore
-export function getTitle(post: RequiredKeyPartialOther<TkContentData, "frontmatter" | "url">) {
-  if (post.frontmatter.title) return post.frontmatter.title;
 
-  const { content = "" } = matter(post.src || "", {});
-  const splitName = basename(post.url).split(".");
-  // 如果目录下有 index.md 且没有一级标题，则使用目录名作为文章标题
-  const name = splitName.length > 1 ? splitName[1] : splitName[0];
-  return getTitleFromMd(content) || name || "";
-}
 
 /**
  * 获取文章时间，获取顺序：frontmatter.date > 文件创建时间 > 当前时间
@@ -127,16 +155,54 @@ export function getTitle(post: RequiredKeyPartialOther<TkContentData, "frontmatt
  * @param srcDir 项目绝对路径
  */
 // @ts-ignore
-export function getDate(post: RequiredKeyPartialOther<TkContentData, "frontmatter" | "url">, srcDir: string) {
+export function getDate(post, srcDir) {
   const { frontmatter, url } = post;
 
+  // 如果 frontmatter.date 存在，直接返回
   if (frontmatter.date) return frontmatter.date;
 
-  // 如果目录下面有 index.md，则 url 不是目录名/index，而是目录名/，因此通过后面的 / 来补 index.md
-  const filePath = join(srcDir, `${url.endsWith("/") ? `${url}/index` : url.replace(/\.html$/, "")}.md`);
-  const stat = statSync(filePath);
-  return formatDate(stat.birthtime || stat.atime);
+  // 查找 rewrites.json 文件（递归查找）
+  const rewritesPath = findRewritesJson(srcDir);
+  
+  let filePath;
+
+  if (rewritesPath) {
+    // 如果 rewrites.json 存在，读取并解析
+    const rewrites = JSON.parse(fs.readFileSync(rewritesPath, 'utf-8')).rewrites;
+
+    // 去掉 url 前后的 / 并加上 .md
+    const urlWithMd = `${url.replace(/^\/|\/$/g, '')}.md`;
+
+    // 根据值去查找对应的键
+    let mappingKey = null;
+    for (const key in rewrites) {
+      if (rewrites[key] === urlWithMd) {
+        mappingKey = key; 
+        break;
+      }
+    }
+
+    if (mappingKey) {
+      filePath = join(srcDir, mappingKey);
+    } 
+  }
+
+
+  // 如果没有在 rewrites 中找到路径，则直接拼接原路径
+  if (!filePath) {
+    filePath = join(srcDir, `${url.endsWith("/") ? `${url}index` : url.replace(/\.html$/, "")}.md`);
+  }
+
+  // 获取文件的创建时间或最后访问时间
+  try {
+    const stat = statSync(filePath);
+    return formatDate(stat.birthtime || stat.atime);
+  } catch (error) {
+    console.error(`Error reading file stats for ${filePath}:`, error);
+    return null;  // 如果文件读取失败，可以返回默认值
+  }
 }
+
 
 /**
  * 截取 markdown 文件前 count 数的内容

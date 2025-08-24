@@ -49,7 +49,7 @@ const tkConfig = baseConfig({
     vitePlugins: {
         autoFrontmatterOption: {
             pattern: "**/*.md",
-            globOptions: { ignore: ["utils", "index.md", "login.md", "pages"] }
+            globOptions: { ignore: ["utils", "index.md", "login.md"] }
         },
         sidebarOption:{
             dir: "docs",

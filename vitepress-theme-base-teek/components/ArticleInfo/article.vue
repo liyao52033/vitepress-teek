@@ -15,7 +15,7 @@ defineOptions({ name: "ArticleInfo" });
 const ns = useNamespace("articleInfo");
 
 // 接收父组件传入的参数
-const { post: propsPost, scope, split = false } = defineProps<PostBaseInfoProps>();
+const { scope, split = false } = defineProps<PostBaseInfoProps>();
 
 // 获取全局配置和主题信息
 const { frontmatter, theme } = useUnrefData();
@@ -33,7 +33,7 @@ const posts = usePosts();
 const route = useRoute();
 
 // 响应式存储当前文章数据
-const currentPost = ref<TkContentData | null>(propsPost || null);
+const currentPost = ref<TkContentData | null>();
 
 // 生成链接的工具函数：替换路径中的{data}占位符
 // 【修复1：确保返回值为string类型】
@@ -89,7 +89,7 @@ const baseInfo = computed(() => {
       icon: User,
       data: author?.name,
       href: author?.link,
-      target: author.link ? "_blank" : "_self",
+      target: author?.link ? "_blank" : "_self",
       show: showAuthor,
     },
     {
