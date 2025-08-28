@@ -13,7 +13,6 @@ const tkConfig = baseConfig({
     },
     loginInfo: {
         isLogin: false, // 是否开启全局登录
-        token: Math.random().toString(32).slice(2) + Math.round(new Date().getTime() / 1000),
         expiration: 0.5,  // token过期时间，单位：天,
         type: 'node'
     },
@@ -38,7 +37,7 @@ const tkConfig = baseConfig({
                 title: "声明",
                 text: `作者：<a href="https://xiaoying.org.cn" target="_blank">华总</a>
                        <p>版权：此文章版权归博主本人所有，如有转载，请注明出处!</p>
-                       <p style="margin-bottom: 0">链接：可通过浏览器地址栏分享此页面文章链接</p> `,
+                       <p style="margin-bottom: 0">链接：可通过浏览器地址栏分享此页面文章链接</p> `
             };
         },
     },
@@ -46,7 +45,7 @@ const tkConfig = baseConfig({
     vitePlugins: {
         autoFrontmatterOption: {
             pattern: "**/*.md",
-            globOptions: { ignore: ["utils", "index.md", "login.md", "pages"] }
+            globOptions: { ignore: ["utils", "index.md", "login.md"] }
         },
         sidebarOption: {
             rewrites: rewritesJson.rewrites,
@@ -106,12 +105,15 @@ export default defineConfig({
             },
         },
         resolve: {
-            alias: [
-                {
-                    find: '@',
-                    replacement: path.resolve(__dirname, '../') // 指向 docs
-                }
-            ]
+            // alias: [
+            //     {
+            //         find: '@',
+            //         replacement: path.resolve(__dirname, '../') // 指向 docs
+            //     }
+            // ]
+            alias: {
+                "@": path.resolve(__dirname, "../") // 这里指向 docs
+            }
         }
     },
     rewrites: generatedRewrites,

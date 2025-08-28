@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref } from "vue";
+//@ts-ignore
 import secureInfo from "@/secureInfo";
 
 // 存储位置信息的键名
@@ -26,7 +27,7 @@ const getSavedPositionId = () => {
 };
 
 // 保存位置ID到本地存储
-const savePositionId = (id) => {
+const savePositionId = (id: string) => {
   try {
     localStorage.setItem(POSITION_STORAGE_KEY, id);
   } catch (e) {
@@ -38,11 +39,11 @@ const savePositionId = (id) => {
 const currentPositionId = ref(getSavedPositionId());
 
 // 全局变量，用于存储菜单元素和事件监听器
-let menu = null;
-let buttonEventListeners = {};
-let menuEventListeners = {};
-let mutationObserver = null;
-let styleElement = null;
+let menu: HTMLDivElement | null = null;
+let buttonEventListeners: { [key: string]: EventListener } = {};
+let menuEventListeners: { [key: string]: EventListener } = {};
+let mutationObserver: MutationObserver | null = null;
+let styleElement: HTMLStyleElement | null = null;
 
 // 在DOM加载前注入初始样式，防止位置闪烁
 const injectInitialStyles = () => {
@@ -113,7 +114,7 @@ const injectInitialStyles = () => {
 };
 
 // 获取指定位置的CSS样式字符串
-const getPositionStyles = (positionId) => {
+const getPositionStyles = (positionId: string) => {
   const position = positionOptions.find(p => p.id === positionId);
   if (!position) return '';
   
@@ -137,8 +138,8 @@ onMounted(() => {
 
   externalScript.onload = () => {
     // 确保 SDK 已挂载到 window 对象
-    if (window.CozeWebSDK && window.CozeWebSDK.WebChatClient) {
-      new window.CozeWebSDK.WebChatClient({
+    if ((window as any).CozeWebSDK && (window as any).CozeWebSDK.WebChatClient) {
+      new (window as any).CozeWebSDK.WebChatClient({
         config: {
           bot_id: secureInfo.botId,
         },
@@ -180,11 +181,13 @@ const setupButtonObserver = () => {
     const button = document.querySelector('.ab1ac9d9bab12da47298');
     if (button) {
       // 按钮已出现，停止观察
-      mutationObserver.disconnect();
+      if (mutationObserver) {
+        mutationObserver.disconnect();
+      }
       
       // 应用位置并设置菜单
       applyPosition(currentPositionId.value, button);
-      setupHoverMenu(button);
+      setupHoverMenu(button as HTMLElement);
       
       // 设置按钮变化观察器
       setupButtonChangeObserver();
@@ -209,7 +212,7 @@ const setupButtonChangeObserver = () => {
   }
   
   // 创建一个新的观察器实例，使用防抖处理以减少性能影响
-  let debounceTimer = null;
+  let debounceTimer: number | null = null;
   
   mutationObserver = new MutationObserver((mutations) => {
     // 使用防抖技术，避免短时间内多次处理
@@ -217,7 +220,7 @@ const setupButtonChangeObserver = () => {
       clearTimeout(debounceTimer);
     }
     
-    debounceTimer = setTimeout(() => {
+    debounceTimer = window.setTimeout(() => {
       // 检查按钮是否存在
       const button = document.querySelector('.ab1ac9d9bab12da47298');
       if (button) {
@@ -228,16 +231,17 @@ const setupButtonChangeObserver = () => {
           // 如果菜单存在，重新绑定事件
           if (menu && document.body.contains(menu)) {
             removeEventListeners();
-            addEventListeners(button, menu);
+            addEventListeners(button as HTMLElement, menu);
           } else {
             // 如果菜单不存在，重新创建
-            setupHoverMenu(button);
+            setupHoverMenu(button as HTMLElement);
           }
         }
       } else {
         // 按钮不存在，可能被移除了，重新设置按钮观察器
         setupButtonObserver();
       }
+      debounceTimer = null;
     }, 300); // 300ms防抖延迟
   });
   
@@ -253,8 +257,8 @@ const setupButtonChangeObserver = () => {
   mutationObserver.observe(document.body, config);
 };
 
-// 应用位置
-const applyPosition = (positionId, buttonElement = null) => {
+// 设置悬停菜单
+const setupHoverMenu = (buttonElement: HTMLElement | null = null) => {
   // 如果没有提供按钮元素，尝试查找
   const button = buttonElement || document.querySelector('.ab1ac9d9bab12da47298');
   if (!button) {
@@ -262,32 +266,37 @@ const applyPosition = (positionId, buttonElement = null) => {
     return;
   }
 
-  // 查找对应的位置配置
-  const position = positionOptions.find(p => p.id === positionId);
-  if (!position) return;
+  // 如果已经存在菜单，先移除
+  if (menu && document.body.contains(menu)) {
+    document.body.removeChild(menu);
+  }
 
-  // 先重置所有可能的位置属性
-  button.style.top = 'auto';
-  button.style.bottom = 'auto';
-  button.style.left = 'auto';
-  button.style.right = 'auto';
-  button.style.transform = 'none';
+  // 创建位置菜单
+  menu = document.createElement('div');
+  menu.className = 'coze-position-menu';
+  menu.innerHTML = `
+    <div class="menu-title">选择位置</div>
+    <div class="menu-options">
+      ${positionOptions.map(option => `
+        <button 
+          class="menu-option ${option.id === currentPositionId.value ? 'active' : ''}" 
+          data-position="${option.id}"
+        >
+          ${option.label}
+        </button>
+      `).join('')}
+    </div>
+  `;
 
-  // 应用CSS样式，只对bottom使用!important
-  Object.entries(position.css).forEach(([key, value]) => {
-    if (key === 'bottom') {
-      button.style.setProperty(key, value, 'important');
-    } else {
-      button.style[key] = value;
-    }
-  });
-  
-  // 设置data-position属性，用于CSS选择器
-  button.setAttribute('data-position', positionId);
+  // 将菜单添加到文档中
+  document.body.appendChild(menu);
+
+  // 添加事件监听器
+  addEventListeners(button, menu);
 };
 
 // 添加事件监听器
-const addEventListeners = (button, menu) => {
+const addEventListeners = (button: HTMLElement, menu: HTMLDivElement) => {
   // 清除之前的事件监听器
   removeEventListeners();
   
@@ -321,89 +330,33 @@ const addEventListeners = (button, menu) => {
     menu.style.left = `${left}px`;
     menu.style.top = `${top}px`;
   };
-
-  // 添加鼠标进入事件
-  const handleButtonMouseEnter = () => {
-    menu.style.opacity = '1';
-    menu.style.visibility = 'visible';
+  
+  // 按钮点击事件
+  buttonEventListeners['click'] = () => {
+    menu.classList.toggle('visible');
     updateMenuPosition();
   };
-  button.addEventListener('mouseenter', handleButtonMouseEnter);
-  buttonEventListeners.mouseenter = handleButtonMouseEnter;
-  
-  // 添加鼠标离开事件
-  const handleButtonMouseLeave = (e) => {
-    // 检查是否移动到菜单上
-    const toElement = e.relatedTarget;
-    if (menu.contains(toElement)) {
-      return;
-    }
-    
-    // 添加延迟，给用户一些时间移动到菜单
-    setTimeout(() => {
-      // 再次检查鼠标是否在菜单上
-      if (menu.matches(':hover')) {
-        return;
-      }
-      menu.style.opacity = '0';
-      menu.style.visibility = 'hidden';
-    }, 100);
-  };
-  button.addEventListener('mouseleave', handleButtonMouseLeave);
-  buttonEventListeners.mouseleave = handleButtonMouseLeave;
-  
-  // 菜单也需要鼠标离开事件
-  const handleMenuMouseLeave = (e) => {
-    // 检查是否移动到按钮上
-    const toElement = e.relatedTarget;
-    if (button.contains(toElement)) {
-      return;
-    }
-    
-    // 添加延迟，给用户一些时间移动回按钮
-    setTimeout(() => {
-      // 再次检查鼠标是否在按钮上
-      if (button.matches(':hover')) {
-        return;
-      }
-      menu.style.opacity = '0';
-      menu.style.visibility = 'hidden';
-    }, 100);
-  };
-  menu.addEventListener('mouseleave', handleMenuMouseLeave);
-  menuEventListeners.mouseleave = handleMenuMouseLeave;
+  button.addEventListener('click', buttonEventListeners['click']);
 
-  // 添加点击事件处理
-  const handleMenuClick = (e) => {
-    const target = e.target;
-    if (target.classList.contains('menu-option')) {
-      const positionId = target.dataset.position;
-      if (positionId) {
-        // 更新当前选中的位置
-        currentPositionId.value = positionId;
-        savePositionId(positionId);
-        applyPosition(positionId, button);
-        
-        // 更新活动状态
-        menu.querySelectorAll('.menu-option').forEach(option => {
-          option.classList.toggle('active', option.dataset.position === positionId);
-        });
-        
-        // 阻止事件冒泡，防止触发按钮点击
-        e.stopPropagation();
-      }
+  // 菜单点击事件
+  menuEventListeners['click'] = (event) => {
+    const target = event.target as HTMLElement;
+    if (target.tagName === 'BUTTON' && target.hasAttribute('data-position')) {
+      const newPositionId = target.getAttribute('data-position')!;
+      currentPositionId.value = newPositionId;
+      applyPosition(newPositionId, button);
+      savePositionId(newPositionId);
+      menu.classList.remove('visible');
     }
   };
-  menu.addEventListener('click', handleMenuClick);
-  menuEventListeners.click = handleMenuClick;
-  
-  // 添加按钮点击事件，在点击后重新应用样式和事件
-  const handleButtonClick = () => {
-    // 使用DOM变化观察器来检测按钮变化，不需要延时
-    // 按钮点击后，观察器会自动检测到变化并重新应用样式
-  };
-  button.addEventListener('click', handleButtonClick);
-  buttonEventListeners.click = handleButtonClick;
+  menu.addEventListener('click', menuEventListeners['click']);
+
+  // 点击其他地方隐藏菜单
+  document.addEventListener('click', (event) => {
+    if (!button.contains(event.target as Node) && !menu.contains(event.target as Node)) {
+      menu.classList.remove('visible');
+    }
+  });
 };
 
 // 移除事件监听器
@@ -420,7 +373,7 @@ const removeEventListeners = () => {
   if (menu) {
     // 移除菜单事件监听器
     Object.entries(menuEventListeners).forEach(([event, handler]) => {
-      menu.removeEventListener(event, handler);
+      menu!.removeEventListener(event, handler);
     });
   }
   
@@ -429,181 +382,48 @@ const removeEventListeners = () => {
   menuEventListeners = {};
 };
 
-// 设置悬停菜单
-const setupHoverMenu = (buttonElement = null) => {
+// 应用位置
+const applyPosition = (positionId: string, buttonElement: Element | null = null) => {
   // 如果没有提供按钮元素，尝试查找
-  const button = buttonElement || document.querySelector('.ab1ac9d9bab12da47298');
+  const button = (buttonElement || document.querySelector('.ab1ac9d9bab12da47298')) as HTMLElement | null;
   if (!button) {
     console.error('找不到Coze按钮元素');
     return;
   }
 
-  // 如果已经存在菜单，先移除
+  // 查找对应的位置配置
+  const position = positionOptions.find(p => p.id === positionId);
+  if (!position) return;
+
+  // 先重置所有可能的位置属性
+  button.style.top = 'auto';
+  button.style.bottom = 'auto';
+  button.style.left = 'auto';
+  button.style.right = 'auto';
+  button.style.transform = 'none';
+
+  // 应用CSS样式，只对bottom使用!important
+  Object.entries(position.css).forEach(([key, value]) => {
+    if (key === 'bottom') {
+      button.style.setProperty(key, value, 'important');
+    } else {
+      button.style[key] = value;
+    }
+  });
+};
+
+// 在组件卸载时清理
+onBeforeUnmount(() => {
+  removeEventListeners();
   if (menu && document.body.contains(menu)) {
     document.body.removeChild(menu);
   }
-
-  // 创建位置菜单
-  menu = document.createElement('div');
-  menu.className = 'coze-position-menu';
-  menu.innerHTML = `
-    <div class="menu-title">选择位置</div>
-    <div class="menu-options">
-      ${positionOptions.map(option => `
-        <button 
-          class="menu-option ${option.id === currentPositionId.value ? 'active' : ''}" 
-          data-position="${option.id}"
-        >
-          ${option.label}
-        </button>
-      `).join('')}
-    </div>
-  `;
-
-  // 添加菜单样式
-  const styleId = 'coze-menu-style';
-  let style = document.getElementById(styleId);
-  
-  if (!style) {
-    style = document.createElement('style');
-    style.id = styleId;
-    style.textContent = `
-      .coze-position-menu {
-        position: fixed; /* 改为fixed定位，相对于视口 */
-        background-color: var(--vp-c-bg, #fff);
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        padding: 10px;
-        width: 120px;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s, visibility 0.3s;
-        z-index: 1000;
-      }
-      
-      /* 添加悬停效果 */
-      .ab1ac9d9bab12da47298 {
-        transition: transform 0.3s ease;
-      }
-      
-      .ab1ac9d9bab12da47298:hover {
-        transform: scale(1.1);
-      }
-      
-      .menu-title {
-        font-size: 14px;
-        font-weight: bold;
-        margin-bottom: 8px;
-        text-align: center;
-        color: var(--vp-c-text-1, #000);
-      }
-      
-      .menu-options {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-      }
-      
-      .menu-option {
-        padding: 5px;
-        border: 1px solid var(--vp-c-divider, #eee);
-        border-radius: 4px;
-        background-color: var(--vp-c-bg-soft, #f9f9f9);
-        cursor: pointer;
-        font-size: 12px;
-        text-align: center;
-        transition: all 0.2s;
-        color: var(--vp-c-text-1, #000);
-      }
-      
-      .menu-option:hover {
-        background-color: var(--vp-c-gray-light-4, #eee);
-      }
-      
-      .menu-option.active {
-        border-color: var(--vp-c-brand, #3eaf7c);
-        background-color: var(--vp-c-brand-dimm, #e6f7ef);
-        color: var(--vp-c-brand-dark, #2c855c);
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  // 添加菜单到body，而不是按钮内部
-  document.body.appendChild(menu);
-  
-  // 添加事件监听器
-  addEventListeners(button, menu);
-};
-
-onBeforeUnmount(() => {
-  // 清理资源
   if (mutationObserver) {
     mutationObserver.disconnect();
   }
-  
-  removeEventListeners();
-  
-  // 移除菜单
-  if (menu && document.body.contains(menu)) {
-    document.body.removeChild(menu);
-  }
-  
-  // 移除样式
   if (styleElement && document.head.contains(styleElement)) {
     document.head.removeChild(styleElement);
   }
 });
+
 </script>
-
-<template>
-  <!-- 不需要任何内容，Coze SDK 会自动创建所需的 DOM 元素 -->
-</template>
-
-<style>
-/* 基本样式已经在JS中动态添加，这里只保留必要的全局样式 */
-/* 只对bottom属性使用!important */
-.ab1ac9d9bab12da47298[data-position="bottom-right"] {
-  bottom: 6rem !important;
-  right: 30px;
-  top: auto;
-  left: auto;
-}
-
-.ab1ac9d9bab12da47298[data-position="bottom-left"] {
-  bottom: 6rem !important;
-  left: 30px;
-  top: auto;
-  right: auto;
-}
-
-.ab1ac9d9bab12da47298[data-position="top-right"] {
-  top: 6rem;
-  right: 30px;
-  bottom: auto;
-  left: auto;
-}
-
-.ab1ac9d9bab12da47298[data-position="top-left"] {
-  top: 6rem;
-  left: 30px;
-  bottom: auto;
-  right: auto;
-}
-
-.ab1ac9d9bab12da47298[data-position="center-right"] {
-  top: 50%;
-  right: 30px;
-  bottom: auto;
-  left: auto;
-  transform: translateY(-50%);
-}
-
-.ab1ac9d9bab12da47298[data-position="center-left"] {
-  top: 50%;
-  left: 30px;
-  bottom: auto;
-  right: auto;
-  transform: translateY(-50%);
-}
-</style>

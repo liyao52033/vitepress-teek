@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+//@ts-ignore
 import secureInfo from '@/secureInfo';
 import { getState, initializeDraggable, updateAccessToken, updateRefreshToken } from './cozeUtils';
+
+defineOptions( { name: "Coze" })
 
 const POSITION_STORAGE_KEY = 'coze-button-position';
 const accessToken = ref("123456")
@@ -19,7 +22,7 @@ const SNAP_DISTANCE_PX = isMobile ? 50 : 20;
 const BOTTOM_SAFE_AREA_PX = isMobile ? 86 : 96;
 
 // 保存 resize 处理函数的引用
-let handleResize = null;
+let handleResize: (() => void) | null = null;
 
 // 保存和读取的位置结构改成 leftRatio 和 topRatio
 const getSavedPosition = () => {
@@ -160,7 +163,7 @@ const setupDraggable = (button: HTMLElement) => {
   button.addEventListener('mousedown', onMouseDown);
 };
 
-let mutationObserver = null;
+let mutationObserver: MutationObserver | null = null;
 
 function setupButtonObserver() {
   if (mutationObserver) mutationObserver.disconnect();
@@ -287,9 +290,9 @@ onMounted(async () => {
   script.type = 'text/javascript';
 
   script.onload = () => {
-    if (window?.CozeWebSDK?.WebChatClient) {
+    if ((window as any).CozeWebSDK?.WebChatClient) {
       // 创建一个函数来初始化 WebChatClient，确保获取最新的 token
-      new window.CozeWebSDK.WebChatClient({
+      new (window as any).CozeWebSDK.WebChatClient({
         config: {
           bot_id: secureInfo.botId,
         },

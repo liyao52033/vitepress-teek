@@ -21,13 +21,10 @@
     }
   },
   "include": [
-    "docs/**/*.ts", "docs/**/*.mts", "docs/**/*.vue", "env.d.ts", "node_modules/vitepress-theme-base-teek/**/*.d.ts"
-    // 显式包含依赖类型
+    "docs/**/*.ts", 
+    "docs/**/*.mts", 
+    "docs/**/*.vue", 
+    "env.d.ts"
   ],
-  "exclude": ["node_modules", "dist", ".idea", ".vscode"],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
+  "exclude": ["node_modules", "dist", ".idea", ".vscode"]
 }

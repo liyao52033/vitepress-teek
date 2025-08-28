@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute } from "vitepress";
+//@ts-ignore
 import secureInfo from "@/secureInfo";
 
 const route = useRoute();
