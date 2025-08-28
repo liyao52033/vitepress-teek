@@ -1,9 +1,11 @@
-import Theme from "vitepress-theme-base-teek"
+import Theme from "vitepress-theme-base-teek";
 import { h } from "vue";
-import Coze from "./components/Coze/index.vue";
+import "./styles/index.css";
+import ArticleBottomTip from "./components/ArticleBottomTip.vue";
 import AiSummary from "./components/Coze/AiSummary.vue";
+import Coze from "./components/Coze/index.vue";
 import WelcomeCard from "./components/WelcomeCard.vue";
-import { autoRegisterComponents } from "./utils/autoRegisterComponents"
+import { autoRegisterComponents } from "./utils/autoRegisterComponents";
 
 export default {
     extends: Theme,
@@ -11,7 +13,8 @@ export default {
         return h(Theme.Layout, null, {
             'liyao-layout-bottom': () => h(Coze) ,
             'liyao-doc-before': () => h(AiSummary),
-            'home-card-after': () => h(WelcomeCard)
+            "home-card-after": () => h(WelcomeCard),
+            "liyao-doc-footer-before": () => h(ArticleBottomTip)
         })
     },
     async enhanceApp({app, router, siteData}) {

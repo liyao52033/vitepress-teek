@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference lib="dom" />
 
 // 让 TypeScript 识别 @/xxx 模块
 declare module "@/*";

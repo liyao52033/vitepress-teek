@@ -1,11 +1,11 @@
-import { defineConfig } from 'vitepress'
-import { generatedRewrites, generatedSidebar } from 'vitepress-plugin-sidebar-permalink'
-import { FooterInfo } from "./footer"
-import baseConfig from "vitepress-theme-base-teek/config";
-import rewritesJson from '../rewrites.json'
-import { nav, toSidebarNavItems } from "./nav"
 import path from "path";
+import { defineConfig } from "vitepress";
+import { generatedRewrites, generatedSidebar } from "vitepress-plugin-sidebar-permalink";
+import baseConfig from "vitepress-theme-base-teek/config";
+import rewritesJson from "../rewrites.json";
 import secureInfo from "../secureInfo";
+import { FooterInfo } from "./footer";
+import { nav, toSidebarNavItems } from "./nav";
 
 const tkConfig = baseConfig({
     webSiteInfo: {
@@ -31,15 +31,16 @@ const tkConfig = baseConfig({
             )
                 return tip;
         },
-        articleBottomTip: () => {
-            return {
-                type: "tip",
-                title: "声明",
-                text: `作者：<a href="https://xiaoying.org.cn" target="_blank">华总</a>
-                       <p>版权：此文章版权归博主本人所有，如有转载，请注明出处!</p>
-                       <p style="margin-bottom: 0">链接：可通过浏览器地址栏分享此页面文章链接</p> `
-            };
-        },
+        // articleBottomTip: () => {
+        //     return {
+        //         type: "tip",
+        //         title: "声明",
+        //         text: computed(() =>
+        //             `作者：<a href="https://xiaoying.org.cn" target="_blank">华总</a>
+        //              <p>版权：此文章版权归博主本人所有，如有转载，请注明出处!</p>
+        //              <p style="margin-bottom: 0">链接：<ArticleLink/></a></p>`
+        //         )};
+        // },
     },
     footerInfo: FooterInfo,
     vitePlugins: {
