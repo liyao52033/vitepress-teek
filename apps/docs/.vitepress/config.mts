@@ -1,7 +1,8 @@
 import { defineConfig } from 'vitepress'
+import { FileInfo } from "vitepress-plugin-setfrontmatter";
 import secureInfo from '../secureInfo'
 import { generatedSidebar, generatedRewrites } from 'vitepress-plugin-sidebar-permalink'
-import baseConfig from "vitepress-theme-base-teek/config";
+import baseConfig, { createAuthor } from "vitepress-theme-base-teek/config";
 import rewritesJson from '../rewrites.json' //插件自动生成
 import { FooterInfo } from "./footer"
 import { toSidebarNavItems, nav } from "./nav"
@@ -49,7 +50,19 @@ const tkConfig = baseConfig({
     vitePlugins: {
         autoFrontmatterOption: {
             pattern: "**/*.md",
-            globOptions: { ignore: ["utils", "index.md", "login.md"] }
+            globOptions: { ignore: ["utils", "index.md", "login.md"] },
+            transform: (frontmatter: any) => {
+                let transformResult = {};
+                const createAuthor = () => {
+                    return {
+                        author: { name: "liyao", link: "https://xiaoying.org.cn" }
+                    };
+                }
+                if (!frontmatter.author) {
+                    transformResult = { ...transformResult, ...createAuthor() };
+                }
+                return transformResult;
+            }
         },
         sidebarOption:{
             dir: "docs",

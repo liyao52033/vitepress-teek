@@ -6,6 +6,9 @@ const { Layout } = DefaultTheme
 
 <template>
   <Layout>
+      <template #aside-top>
+          这是原生插槽测试
+      </template>
 
   </Layout>
 </template>

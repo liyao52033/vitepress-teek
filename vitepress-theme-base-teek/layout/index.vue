@@ -1,5 +1,6 @@
 <template>
  <Layout>
+   <!-- 覆盖/扩展的插槽 -->
    <template #not-found>
      <ClientOnly>
        <NotFound />
@@ -52,6 +53,15 @@
         <slot name="liyao-doc-before" v-if="currentLayout === 'doc'" />
       </ClientOnly>
    </template>
+
+    <!-- 其他 VP 插槽 -->
+  <template
+          v-for="name in Object.keys($slots).filter(name => !usedSlots.includes(name))"
+          :key="name"
+          #[name]="slotData"
+  >
+    <slot :name="name" v-bind="slotData"></slot>
+  </template>
  </Layout>
 </template>
 
@@ -80,8 +90,18 @@ const { frontmatter } = useData()
 
 const { topTipConfig, bottomTipConfig } = useArticleTips()
 
-const currentLayout = computed(() => unref(frontmatter).layout || 'doc')
+// 已经覆盖的插槽（避免重复转发）
+const usedSlots = [
+    'not-found',
+    'doc-top',
+    'doc-footer-before',
+    'home-features-after',
+    'layout-bottom',
+    'page-top',
+    'doc-before',
+]
 
+const currentLayout = computed(() => unref(frontmatter).layout || 'doc')
 const isFooter = computed(() => unref(frontmatter).footer !== false)
 const bottomTip = computed(() => unref(frontmatter).bottomTip !== false)
 const topTip = computed(() => unref(frontmatter).topTip !== false)

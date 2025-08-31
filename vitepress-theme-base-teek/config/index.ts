@@ -7,11 +7,11 @@ import AutoFrontmatter, { FileInfo } from "vitepress-plugin-setfrontmatter";
 import SidebarPermalinkPlugin from 'vitepress-plugin-sidebar-permalink'
 import { UserConfig } from "vitepress";
 import { PluginOption } from "vite";
-import { transformData, transformRaw } from "../post";
-import { Post, TkContentData } from "../post/types";
+import { transformData, transformRaw } from "post";
+import { Post, TkContentData } from "post/types";
 import { codeArrowPlugin, imgCardPlugin, navCardPlugin, shareCardPlugin, todoPlugin } from "../markdown";
-import { containerPlugins, createContainersThenUse } from "../markdown/plugins/container";
-import { createAuthor, createCategory, createCoverImg, createPermalink } from "../utils";
+import { containerPlugins, createContainersThenUse } from "markdown/plugins/container";
+import { createCategory, createCoverImg, createPermalink, editFrontmatter } from "utils";
 
 export default function baseConfig(config: ThemeConfig ): UserConfig {
   const { vitePlugins, markdownPlugins = [], markdownContainers = [], containerLabel, ...tkThemeConfig } = config;
@@ -27,7 +27,7 @@ export default function baseConfig(config: ThemeConfig ): UserConfig {
   } = vitePlugins || {};
 
   const plugins: PluginOption[] = [];
-
+  
   // 定义各插件扫描时忽略的目录
   const ignoreDir = {
     autoFrontmatter: [".vite-cache", "components", ".vitepress", "public", "node_modules"],
@@ -63,13 +63,12 @@ export default function baseConfig(config: ThemeConfig ): UserConfig {
      if ( permalink && !frontmatter.permalink ) {
         transformResult = { ...transformResult, ...createPermalink(permalinkPrefix) };
       }
-
-      if ( !frontmatter.author ) {
-        transformResult = { ...transformResult, ...createAuthor() };
-      }
-
+     
       if ( !frontmatter.coverImg && coverImg ) {
         transformResult = { ...transformResult, ...createCoverImg() };
+      } else if (!coverImg && frontmatter.coverImg){
+        editFrontmatter().then(r =>{
+          console.log("已删除所有的frontmatter.coverImg");}) 
       }
 
       if (categories && !frontmatter.categories) {
