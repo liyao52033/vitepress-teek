@@ -29,7 +29,7 @@ const handleCopy = async () => {
     <p class="custom-block-title">声明</p>
     <p>
       作者：
-      <a href="https://xiaoying.org.cn" rel="noopener noreferrer" target="_blank">华总</a>
+      <a href="https://xiaoying.org.cn" rel="noopener noreferrer" target="_blank">liyao</a>
     </p>
     <p>
       版权：本博客所有文章除特别声明外，均采用<a href="http://www.suncai.net/PubLicense/CCBY40.html" target="_blank">CCBY-NC-SA4.O</a>许可协议。转载请注明!

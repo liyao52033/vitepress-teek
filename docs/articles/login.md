@@ -10,9 +10,6 @@ docAnalysis: false
 inCatalogue: false
 footer: false
 permalink: /login
-author:
-  name: 华总
-  link: https://xiaoying.org.cn
 ---
 
 

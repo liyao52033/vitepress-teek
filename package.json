@@ -7,11 +7,12 @@
     "ins": "pnpm install --fix-peer-deps && pnpm dedupe"
   },
   "devDependencies": {
+    "@docsearch/js": "^4.0.0-beta.8",
     "@types/node": "^24.3.0",
     "element-plus": "^2.10.6",
     "vitepress": "^1.6.4",
     "vitepress-plugin-sidebar-permalink": "^1.6.0",
-    "vitepress-theme-base-teek": "^1.4.4",
+    "vitepress-theme-base-teek": "^1.4.7",
     "vue": "^3.5.18"
   },
   "dependencies": {

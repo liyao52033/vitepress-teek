@@ -71,8 +71,8 @@ const setupDraggable = (button: HTMLElement) => {
     topPx = Math.min(Math.max(0, topPx), vh - button.offsetHeight);
 
     button.style.position = "fixed";
-    button.style.left = `${ leftPx / rootFontSize }rem`;
-    button.style.top = `${ topPx / rootFontSize }rem`;
+    button.style.left = `${leftPx / rootFontSize}rem`;
+    button.style.top = `${topPx / rootFontSize}rem`;
     button.style.right = "auto";
     button.style.bottom = "auto";
     button.style.transform = "none";
@@ -127,8 +127,8 @@ const setupDraggable = (button: HTMLElement) => {
         if (newTop < SNAP_DISTANCE_PX) newTop = 0;
         if (vh - (newTop + button.offsetHeight) < SNAP_DISTANCE_PX) newTop = vh - button.offsetHeight;
 
-        button.style.left = `${ newLeft / rootFontSize }rem`;
-        button.style.top = `${ newTop / rootFontSize }rem`;
+        button.style.left = `${newLeft / rootFontSize}rem`;
+        button.style.top = `${newTop / rootFontSize}rem`;
     };
 
     const onMouseUp = (e: any) => {
@@ -166,7 +166,7 @@ const setupDraggable = (button: HTMLElement) => {
 let mutationObserver: MutationObserver | null = null;
 
 function setupButtonObserver() {
-    if (mutationObserver) {mutationObserver.disconnect();}
+    if (mutationObserver) { mutationObserver.disconnect(); }
     mutationObserver = new MutationObserver(() => {
         const button = document.querySelector(".ab1ac9d9bab12da47298") as HTMLElement | null;
         if (button) {
@@ -233,8 +233,8 @@ const ensureButtonInViewport = () => {
     if (rect.right > vw) newLeft = vw - rect.width;
     if (rect.bottom > vh) newTop = vh - rect.height;
 
-    button.style.left = `${ newLeft / rootFontSize }rem`;
-    button.style.top = `${ newTop / rootFontSize }rem`;
+    button.style.left = `${newLeft / rootFontSize}rem`;
+    button.style.top = `${newTop / rootFontSize}rem`;
     button.style.position = "fixed";
     button.style.right = "auto";
     button.style.bottom = "auto";
@@ -273,8 +273,8 @@ onMounted(async () => {
             leftPx = Math.min(Math.max(0, leftPx), vw - button.offsetWidth);
             topPx = Math.min(Math.max(0, topPx), vh - button.offsetHeight);
 
-            button.style.left = `${ leftPx / rootFontSize }rem`;
-            button.style.top = `${ topPx / rootFontSize }rem`;
+            button.style.left = `${leftPx / rootFontSize}rem`;
+            button.style.top = `${topPx / rootFontSize}rem`;
             button.style.position = "fixed";
             button.style.right = "auto";
             button.style.bottom = "auto";

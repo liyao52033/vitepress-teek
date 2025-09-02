@@ -1,7 +1,59 @@
-.VPSidebar .nav .item h2.text {
+/* .VPSidebar .nav .item h2.text {
     font-size: 1rem;
 }
 
 .VPSidebar .nav .item p.text {
     font-size: 14px;
 }
+
+.DocSearch-Footer{
+    display: none;
+}
+
+.DocSearch-Hit mark {
+    color: #003dff;
+    text-decoration: underline;
+    text-underline-offset: .3em;
+}
+
+.DocSearch-Hit a, .DocSearch-Hit--AskAI {
+    background: var(--docsearch-hit-background);
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+}
+
+.DocSearch-Hit-AskAIButton {
+    align-items: center;
+    color: var(--docsearch-text-color);
+    display: flex;
+    flex-direction: row;
+
+    &:hover {
+        background-color: #409fe563;
+    }
+}
+
+.DocSearch-Hit[aria-selected=true] .DocSearch-Hit-Tree,
+.DocSearch-Hit[aria-selected=true] .DocSearch-Hit-action,
+.DocSearch-Hit[aria-selected=true] .DocSearch-Hit-icon,
+.DocSearch-Hit[aria-selected=true] .DocSearch-Hit-path,
+.DocSearch-Hit[aria-selected=true] .DocSearch-Hit-text,
+.DocSearch-Hit[aria-selected=true] .DocSearch-Hit-title,
+.DocSearch-Hit[aria-selected=true] mark {
+    color: #4e40e5 !important;
+}
+
+.DocSearch-Hit-AskAIButton-title-query {
+    background: none;
+    color: #003dff;
+    margin-left: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover {
+        color: #003dff;
+    }
+} */
