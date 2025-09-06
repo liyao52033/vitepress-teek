@@ -1,4 +1,3 @@
-import { fileURLToPath, URL } from "node:url";
 import path from "path";
 import { defineConfig } from "vitepress";
 import { generatedRewrites, generatedSidebar } from "vitepress-plugin-sidebar-permalink";
@@ -66,11 +65,11 @@ const tkConfig = baseConfig({
 
 export default defineConfig({
     extends: tkConfig,
-    title: "VitePress",
+    title: "组件库文档",
     lang: "zh-CN",
-    description: "A VitePress Site",
+    description: "常用组件及代码封装，减少重复造轮子, 快速开发",
     head: [
-        ['link', { rel: 'icon', href: 'favicon.ico' }],
+        ["link", { rel: "icon", href: "favicon.ico", type: "image/x-icon" }],
         ['script', { src: '//at.alicdn.com/t/c/font_5002477_3r8q6p0a9n8.js' }],
         [
             "meta",
@@ -106,6 +105,11 @@ export default defineConfig({
                     //   target: 'http://localhost:3000',
                     changeOrigin: true
                 },
+                "/multi-search": {
+                    target: "https://vp.xiaoying.org.cn",
+                    changeOrigin: true
+                },
+
             },
         },
         resolve: {
@@ -158,13 +162,20 @@ export default defineConfig({
         //         }
         //     }
         // },
-        search: {
-            provider: 'algolia',
-            options: {
-                appId: secureInfo.appId,
-                apiKey: secureInfo.apiKey,
-                indexName: secureInfo.indexName
-            }
+        // search: {
+        //     provider: 'algolia',
+        //     options: {
+        //         appId: secureInfo.appId,
+        //         apiKey: secureInfo.apiKey,
+        //         indexName: secureInfo.indexName
+        //     }
+        // },
+        //@ts-ignore
+        meilisearch: {
+            host: "http://localhost:5173/", // 服务地址（自建或云服务）
+            apiKey: secureInfo.searchKey, // 搜索密钥（非管理员密钥）
+            indexName: "teek", // 索引名称
+            placeholder: "搜索文档..." // 搜索框提示文字
         },
         outline: {
             level: [2, 3],

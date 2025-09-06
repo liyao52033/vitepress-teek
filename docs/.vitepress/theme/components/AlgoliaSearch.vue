@@ -115,7 +115,7 @@ function getRelativePath(url: string) {
 </script>
 
 <template>
-  <div id="docsearch" />
+  <div id="docsearch"></div>   
 </template>
 
 <style>
