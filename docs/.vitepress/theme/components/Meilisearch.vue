@@ -205,18 +205,10 @@ const updateSelectedIndex = () => {
 const toggleSearch = async () => {
     isSearchOpen.value = !isSearchOpen.value;
     if (isSearchOpen.value) {
-        // 禁止页面滚动
-        if (typeof window !== 'undefined') {
-            document.body.style.overflow = 'hidden';
-        } 
         await nextTick();
         searchInput.value?.focus();
         initMeiliSearch();
     } else {
-        // 恢复页面滚动
-        if (typeof window !== 'undefined') {
-            document.body.style.overflow = '';
-        }
         clearSearch();
     }
 };
@@ -472,8 +464,6 @@ if (typeof window !== 'undefined'){
 
 // 组件卸载时销毁搜索实例
 onUnmounted(() => {
-    // 确保在组件销毁时恢复页面滚动
-    document.body.style.overflow = '';
     if (searchInstance) {
         searchInstance.removeWidgets();
         searchInstance.destroy();
