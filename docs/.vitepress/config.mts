@@ -172,7 +172,7 @@ export default defineConfig({
         // },
         //@ts-ignore
         meilisearch: {
-            host: "http://localhost:5173/", // 服务地址（自建或云服务）
+            host: "https://vp.xiaoying.org.cn", // 服务地址（自建或云服务）
             apiKey: secureInfo.searchKey, // 搜索密钥（非管理员密钥）
             indexName: "teek", // 索引名称
             placeholder: "搜索文档..." // 搜索框提示文字

@@ -321,7 +321,7 @@ const moveUp = () => {
         return;
     }
 
-    const currentGroup = groups[currentGroupIndex.value];
+   // const currentGroup = groups[currentGroupIndex.value];
     if (currentItemIndex.value > 0) {
         currentItemIndex.value--;
         updateSelectedIndex();
@@ -374,18 +374,21 @@ const scrollToActiveItem = () => {
     if (currentGroupIndex.value === -1 || currentItemIndex.value === -1 || !groups.length) return;
 
     // 找到当前选中项的DOM元素（分组列表下的第N个li）
-    const groupUl = document.getElementById(`docsearch-hits${ currentGroupIndex.value }-list`);
-    if (!groupUl) return;
-
-    const activeLi = groupUl.children[currentItemIndex.value];
-    if (activeLi) {
-        // 平滑滚动，让选中项在视口内（顶部对齐，避免被遮挡）
-        activeLi.scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'nearest'
-        });
+    if (typeof window !== 'undefined'){
+        const groupUl = document.getElementById(`docsearch-hits${ currentGroupIndex.value }-list`);
+        if (!groupUl) return;
+        const activeLi = groupUl.children[currentItemIndex.value];
+        if (activeLi) {
+            // 平滑滚动，让选中项在视口内（顶部对齐，避免被遮挡）
+            activeLi.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'nearest'
+            });
+        }
     }
+    
+   
 };
 
 // 判断文本是否包含关键词（大小写不敏感）
@@ -417,12 +420,15 @@ const goToHit = () => {
 };
 
 // 注册 Ctrl+K 快捷键
-document.addEventListener('keydown', e => {
-    if (e.ctrlKey && e.key === 'k') {
-        e.preventDefault();
-        toggleSearch();
-    }
-});
+if (typeof window !== 'undefined'){
+    document.addEventListener('keydown', e => {
+        if (e.ctrlKey && e.key === 'k') {
+            e.preventDefault();
+            toggleSearch();
+        }
+    });
+}
+
 
 // 组件卸载时销毁搜索实例
 onUnmounted(() => {
