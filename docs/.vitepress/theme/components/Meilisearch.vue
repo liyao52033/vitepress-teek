@@ -84,10 +84,9 @@
                 </div>
 
                 <!-- Footer 布局 -->
-                <footer class="DocSearch-Footer"
-                        style="display: flex; justify-content: space-between; align-items: center; padding: 8px;">
-                    <div class="DocSearch-Logo" style="display: flex; align-items: center;">
-                        <span class="DocSearch-Label" style="margin-right: 4px;">Search by</span>
+                <footer class="DocSearch-Footer">
+                    <div class="DocSearch-Logo">
+                        <span class="DocSearch-Label">Search by</span>
                         <a href="https://www.meilisearch.com" rel="noopener noreferrer" target="_blank">
                             <img alt="Meilisearch's logo" data-nimg="1" decoding="async" fetchpriority="high"
                                  height="25"
@@ -173,10 +172,18 @@ const groupedHits = computed(() => {
 const toggleSearch = async () => {
     isSearchOpen.value = !isSearchOpen.value;
     if (isSearchOpen.value) {
+        // 禁止页面滚动
+        if (typeof window !== 'undefined') {
+            document.body.style.overflow = 'hidden';
+        } 
         await nextTick();
         searchInput.value?.focus();
         initMeiliSearch();
     } else {
+        // 恢复页面滚动
+        if (typeof window !== 'undefined') {
+            document.body.style.overflow = '';
+        }
         clearSearch();
     }
 };
@@ -245,6 +252,8 @@ const clearSearch = () => {
 // 关闭搜索弹窗
 const closeSearch = () => {
     isSearchOpen.value = false;
+    // 恢复页面滚动
+    document.body.style.overflow = '';
     clearSearch();
 };
 
@@ -432,6 +441,8 @@ if (typeof window !== 'undefined'){
 
 // 组件卸载时销毁搜索实例
 onUnmounted(() => {
+    // 确保在组件销毁时恢复页面滚动
+    document.body.style.overflow = '';
     if (searchInstance) {
         searchInstance.removeWidgets();
         searchInstance.destroy();
@@ -441,6 +452,19 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.DocSearch-Footer {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 8px;
+}
+
+.DocSearch-Logo {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
 .DocSearch-Button {
     background-color: transparent;
     margin-left: 1rem;
@@ -473,7 +497,6 @@ onUnmounted(() => {
 .DocSearch-Logo img {
     display: block;
     height: 44px;
-
 }
 
 /* 关键词高亮样式（可根据主题调整颜色） */
@@ -485,5 +508,94 @@ onUnmounted(() => {
     border-radius: 2px;
     box-shadow: 0 0 2px rgba(255, 235, 59, 0.5);
     /* 强化视觉，确保可见 */
+}
+
+/* 移动端全屏样式 */
+@media (max-width: 768px) {
+    .DocSearch-Container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .DocSearch-Modal {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: calc(100% - 50px);
+        /* 为页脚留出高度，假设页脚高50px，可根据实际调整 */
+        max-width: 100%;
+        max-height: calc(100% - 50px);
+        border-radius: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .DocSearch-SearchBar {
+        flex: 0 0 auto;
+    }
+
+    .DocSearch-Dropdown {
+        flex: 1;
+        overflow-y: auto;
+        max-height: calc(100vh - 170px);
+        /* 为搜索框和页脚等留出空间，数值根据实际调整 */
+    }
+
+    .DocSearch-Footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 44px;
+        background: var(--docsearch-footer-background);
+        padding: 8px !important;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .DocSearch-Commands {
+        display: flex;
+        width: 60%;
+        gap: 5px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .DocSearch-Commands li {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .DocSearch-Label {
+        font-size: 12px;
+        color: var(--docsearch-muted-color);
+    }
+
+    .DocSearch-Commands-Key {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .DocSearch-Logo {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding-left: 10px;
+        vertical-align: middle;
+        /* 确保与 img 对齐 */
+        flex-wrap: nowrap;
+        /* 防止内容换行 */
+    }
 }
 </style>
