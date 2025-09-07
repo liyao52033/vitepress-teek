@@ -47,7 +47,7 @@
                                     :class="{ 'active': currentGroupIndex === groupIdx && currentItemIndex === itemIdx }"
                                     class="DocSearch-Hit"
                                     role="option" @mouseenter="handleMouseEnter(groupIdx, itemIdx)">
-                                    <a :href="hit.url" @click="closeSearch">
+                                    <a :href="hit.url" @click="goToSpecificHit(groupIdx, itemIdx, $event)">
                                         <div class="DocSearch-Hit-Container">
                                             <div class="DocSearch-Hit-content-wrapper">
                                                 <!-- 主标题：关键词高亮 -->
@@ -168,6 +168,42 @@ const groupedHits = computed(() => {
     return Array.from(groupMap.values()).sort((a, b) => a.title.localeCompare(b.title));
 });
 
+// 同步选中状态（currentGroupIndex/currentItemIndex → selectedIndex）
+const updateSelectedIndex = () => {
+    const groups = groupedHits.value;
+
+    // 检查 groups 是否为空
+    if (!groups || groups.length === 0) {
+        selectedIndex.value = -1;
+        return;
+    }
+
+    // 检查 group 和 item 索引是否有效
+    if (
+        currentGroupIndex.value === -1 ||
+        currentItemIndex.value === -1 ||
+        currentGroupIndex.value >= groups.length
+    ) {
+        selectedIndex.value = -1;
+        return;
+    }
+
+    const currentGroup = groups[currentGroupIndex.value];
+
+    // 检查当前分组是否有内容
+    if (!currentGroup || !currentGroup.items || currentItemIndex.value >= currentGroup.items.length) {
+        selectedIndex.value = -1;
+        return;
+    }
+
+    let prevItemsCount = 0;
+    for (let i = 0; i < currentGroupIndex.value; i++) {
+        prevItemsCount += groups[i].items.length;
+    }
+
+    selectedIndex.value = prevItemsCount + currentItemIndex.value;
+};
+
 // 切换搜索弹窗显示
 const toggleSearch = async () => {
     isSearchOpen.value = !isSearchOpen.value;
@@ -203,13 +239,26 @@ const initMeiliSearch = () => {
         hitsWidget({
             container: hitsContainer.value,
             transformItems: items => {
-                const validItems = items.filter(item => item.url && item.anchor);
+                // 确保每个搜索结果项都有正确的url，规范化URL格式
+                const validItems = items.map(item => {
+                    // 如果有anchor但没有url，构造一个url
+                    if (!item.url && item.anchor) {
+                        item.url = new URL(`#${item.anchor}`, window.location.href).href;
+                    } 
+                    
+                    // 如果既没有url也没有anchor，使用当前页面URL
+                    if (!item.url) {
+                        item.url = window.location.href;
+                    }
+
+                    return item;
+                }).filter(item => item.url); // 只保留有url的项目
+                
                 hits.value = validItems;
                 // 默认选中第一个项（模拟hover）
                 if (validItems.length > 0) {
                     currentGroupIndex.value = 0; // 第一个分组
                     currentItemIndex.value = 0;  // 分组第一个项
-                    updateSelectedIndex();        // 同步全局索引
                     // 等待DOM渲染后执行滚动（确保元素存在）
                     nextTick(() => scrollToActiveItem());
                 } else {
@@ -252,8 +301,6 @@ const clearSearch = () => {
 // 关闭搜索弹窗
 const closeSearch = () => {
     isSearchOpen.value = false;
-    // 恢复页面滚动
-    document.body.style.overflow = '';
     clearSearch();
 };
 
@@ -261,6 +308,32 @@ const handleMouseEnter = (groupIdx, itemIdx) => {
     currentGroupIndex.value = groupIdx; // 更新分组索引
     currentItemIndex.value = itemIdx;   // 更新项索引
     updateSelectedIndex();              // 同步全局索引
+};
+
+// 跳转到特定搜索结果项
+const goToSpecificHit = (groupIdx, itemIdx, event) => {
+    // 阻止默认跳转行为
+    event.preventDefault();
+    
+    // 更新选中索引
+    currentGroupIndex.value = groupIdx;
+    currentItemIndex.value = itemIdx;
+     
+    // 执行跳转
+    goToHit();
+};
+
+// 跳转到选中的搜索结果
+const goToHit = () => {
+    // 直接使用当前分组和项索引获取正确的搜索结果项
+    if (currentGroupIndex.value >= 0 && currentItemIndex.value >= 0 && 
+        groupedHits.value[currentGroupIndex.value] && 
+        groupedHits.value[currentGroupIndex.value].items[currentItemIndex.value]) {
+        
+        const hit = groupedHits.value[currentGroupIndex.value].items[currentItemIndex.value];
+        window.location.href = hit.url;
+        closeSearch();
+    }
 };
 
 // 向下切换逻辑
@@ -273,8 +346,7 @@ const moveDown = () => {
             if (groups[i].items.length > 0) {
                 currentGroupIndex.value = i;
                 currentItemIndex.value = 0;
-                updateSelectedIndex();
-                scrollToActiveItem(); // 切换时滚动
+                scrollToActiveItem();
                 return;
             }
         }
@@ -284,8 +356,7 @@ const moveDown = () => {
     const currentGroup = groups[currentGroupIndex.value];
     if (currentItemIndex.value < currentGroup.items.length - 1) {
         currentItemIndex.value++;
-        updateSelectedIndex();
-        scrollToActiveItem(); // 切换时滚动
+        scrollToActiveItem();
         return;
     }
 
@@ -294,8 +365,7 @@ const moveDown = () => {
         if (groups[nextGroupIndex].items.length > 0) {
             currentGroupIndex.value = nextGroupIndex;
             currentItemIndex.value = 0;
-            updateSelectedIndex();
-            scrollToActiveItem(); // 切换时滚动
+            scrollToActiveItem();
             return;
         }
         nextGroupIndex++;
@@ -305,8 +375,7 @@ const moveDown = () => {
         if (groups[i].items.length > 0) {
             currentGroupIndex.value = i;
             currentItemIndex.value = 0;
-            updateSelectedIndex();
-            scrollToActiveItem(); // 切换时滚动
+            scrollToActiveItem();
             return;
         }
     }
@@ -322,19 +391,16 @@ const moveUp = () => {
             if (groups[i].items.length > 0) {
                 currentGroupIndex.value = i;
                 currentItemIndex.value = groups[i].items.length - 1;
-                updateSelectedIndex();
-                scrollToActiveItem(); // 切换时滚动
+                scrollToActiveItem();
                 return;
             }
         }
         return;
     }
 
-   // const currentGroup = groups[currentGroupIndex.value];
     if (currentItemIndex.value > 0) {
         currentItemIndex.value--;
-        updateSelectedIndex();
-        scrollToActiveItem(); // 切换时滚动
+        scrollToActiveItem();
         return;
     }
 
@@ -343,8 +409,7 @@ const moveUp = () => {
         if (groups[prevGroupIndex].items.length > 0) {
             currentGroupIndex.value = prevGroupIndex;
             currentItemIndex.value = groups[prevGroupIndex].items.length - 1;
-            updateSelectedIndex();
-            scrollToActiveItem(); // 切换时滚动
+            scrollToActiveItem();
             return;
         }
         prevGroupIndex--;
@@ -354,27 +419,10 @@ const moveUp = () => {
         if (groups[i].items.length > 0) {
             currentGroupIndex.value = i;
             currentItemIndex.value = groups[i].items.length - 1;
-            updateSelectedIndex();
-            scrollToActiveItem(); // 切换时滚动
+            scrollToActiveItem();
             return;
         }
     }
-};
-
-// 同步选中状态（currentGroupIndex/currentItemIndex → selectedIndex）
-const updateSelectedIndex = () => {
-    const groups = groupedHits.value;
-    if (currentGroupIndex.value === -1 || currentItemIndex.value === -1) {
-        selectedIndex.value = -1;
-        return;
-    }
-
-    let prevItemsCount = 0;
-    for (let i = 0; i < currentGroupIndex.value; i++) {
-        prevItemsCount += groups[i].items.length;
-    }
-
-    selectedIndex.value = prevItemsCount + currentItemIndex.value;
 };
 
 // 滚动到当前选中项
@@ -382,22 +430,16 @@ const scrollToActiveItem = () => {
     const groups = groupedHits.value;
     if (currentGroupIndex.value === -1 || currentItemIndex.value === -1 || !groups.length) return;
 
-    // 找到当前选中项的DOM元素（分组列表下的第N个li）
-    if (typeof window !== 'undefined'){
-        const groupUl = document.getElementById(`docsearch-hits${ currentGroupIndex.value }-list`);
-        if (!groupUl) return;
-        const activeLi = groupUl.children[currentItemIndex.value];
-        if (activeLi) {
-            // 平滑滚动，让选中项在视口内（顶部对齐，避免被遮挡）
-            activeLi.scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-                inline: 'nearest'
-            });
-        }
+    const groupUl = document.getElementById(`docsearch-hits${currentGroupIndex.value}-list`);
+    if (!groupUl) return;
+    const activeLi = groupUl.children[currentItemIndex.value];
+    if (activeLi) {
+        activeLi.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'nearest'
+        });
     }
-    
-   
 };
 
 // 判断文本是否包含关键词（大小写不敏感）
@@ -418,14 +460,6 @@ const highlightKeyword = (text, keyword) => {
         new RegExp(`(${ escapedKeyword })`, 'gi'), // g=全局匹配，i=大小写不敏感
         '<span class="docsearch-highlight">$1</span>'
     );
-};
-
-// 跳转到选中的搜索结果
-const goToHit = () => {
-    if (selectedIndex.value >= 0 && selectedIndex.value < hits.value.length) {
-        window.location.href = hits.value[selectedIndex.value].url;
-        closeSearch();
-    }
 };
 
 // 注册 Ctrl+K 快捷键
