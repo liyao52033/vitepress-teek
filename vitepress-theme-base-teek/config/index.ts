@@ -11,7 +11,7 @@ import { transformData, transformRaw } from "post";
 import { Post, TkContentData } from "post/types";
 import { codeArrowPlugin, imgCardPlugin, navCardPlugin, shareCardPlugin, todoPlugin } from "../markdown";
 import { containerPlugins, createContainersThenUse } from "markdown/plugins/container";
-import { createCategory, createCoverImg, createPermalink, editFrontmatter } from "utils";
+import { createCategory, createCoverImg, createPermalink } from "utils";
 
 export default function baseConfig(config: ThemeConfig ): UserConfig {
   const { vitePlugins, markdownPlugins = [], markdownContainers = [], containerLabel, ...tkThemeConfig } = config;
@@ -50,7 +50,7 @@ export default function baseConfig(config: ThemeConfig ): UserConfig {
 
     // 默认扫描全部 MD 文件
     if (!pattern) autoFrontmatterOption.pattern = "**/*.md";
-
+    
     autoFrontmatterOption.globOptions = {
       ...autoFrontmatterOption.globOptions,
       ignore: [...ignoreDir.autoFrontmatter, ...(globOptions.ignore || [])],
@@ -66,10 +66,7 @@ export default function baseConfig(config: ThemeConfig ): UserConfig {
      
       if ( !frontmatter.coverImg && coverImg ) {
         transformResult = { ...transformResult, ...createCoverImg() };
-      } else if (!coverImg && frontmatter.coverImg){
-        editFrontmatter().then(r =>{
-          console.log("已删除所有的frontmatter.coverImg");}) 
-      }
+      } 
 
       if (categories && !frontmatter.categories) {
         transformResult = { ...transformResult, ...createCategory(fileInfo, ignoreDir.categories) };
@@ -80,8 +77,7 @@ export default function baseConfig(config: ThemeConfig ): UserConfig {
 
     plugins.push(AutoFrontmatter(autoFrontmatterOption));
   }
-
-
+  
   // 自动给 MD 添加一级标题插件
   if (mdH1) plugins.push(MdH1());
   // 侧边栏插件

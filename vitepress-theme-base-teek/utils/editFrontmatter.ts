@@ -22,7 +22,7 @@ export async function editFrontmatter(key: string = 'coverImg'): Promise<void> {
             delete matterData[key];
             mark = true;
         }
-        
+
         if (mark) {
             if (matterData.date && type(matterData.date) === 'date') {
                 matterData.date = repairDate(matterData.date);

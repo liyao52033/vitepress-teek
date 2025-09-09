@@ -35,6 +35,12 @@ function isMoreThanSeconds(givenTimeSeconds: number, seconds: number): boolean {
  * @returns {boolean} 如果用户已通过身份验证且授权数据有效则返回true，否则返回false
  */
 export function checkAuth(): boolean {
+
+  // 只在浏览器环境下访问 localStorage
+  if (typeof window === 'undefined') {
+    return false
+  }
+  
   // 从本地存储中获取授权数据
   const auth = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
   // 如果授权数据存在并且数据长度不为0，则授权验证通过
@@ -42,7 +48,6 @@ export function checkAuth(): boolean {
     const { time, expire, accesskey } = auth
     return !isMoreThanSeconds(time, expire) && accesskey;
   }
-  
   
   return false;
 }

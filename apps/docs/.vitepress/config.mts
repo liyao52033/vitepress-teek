@@ -16,9 +16,7 @@ const tkConfig = baseConfig({
         isLogin: false, // 是否开启全局登录
         username: secureInfo.username, // 登录用户名
         password: secureInfo.password, // 登录密码
-        token: Math.random().toString(32).slice(2) + Math.round(new Date().getTime() / 1000),
-        expiration: 0.5,  // token过期时间，单位：天,
-        type: 'node'
+        expiration: 0.5,  // token过期时间，单位：天
     },
     articleTip: {
         articleTopTip: (frontmatter) => {
@@ -51,6 +49,8 @@ const tkConfig = baseConfig({
         autoFrontmatterOption: {
             pattern: "**/*.md",
             globOptions: { ignore: ["utils", "index.md", "login.md"] },
+          //  coverImg: true,
+          //  key: "test",
             transform: (frontmatter: any) => {
                 let transformResult = {};
                 const createAuthor = () => {
@@ -101,7 +101,7 @@ export default defineConfig({
     ],
     vite: {
         build: {
-            chunkSizeWarningLimit: 1500,
+            chunkSizeWarningLimit: 2000,
         },
         server: {
             proxy: {

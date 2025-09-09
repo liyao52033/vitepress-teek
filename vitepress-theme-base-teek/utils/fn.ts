@@ -1,3 +1,15 @@
+import { useRoute } from "vitepress";
+
+/**
+ * 获取当前页面路径
+ * @returns {string} 当前页面的路径部分（例如：/pages/fe4521）
+ */
+export function getPagePath(): string {
+    const route = useRoute()
+    return route.path
+}
+
+
 /**
  * 获取对象类型的小写字符串
  * @param o 任意值

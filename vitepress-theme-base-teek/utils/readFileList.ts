@@ -9,7 +9,7 @@ export interface FileItem {
 // docs 根目录路径
 let docsRoot = '';
 if (typeof window === 'undefined'){
-  docsRoot = path.join(process.cwd(), 'docs')
+    docsRoot = path.join(process.cwd(), 'docs')
 }
 
 /**

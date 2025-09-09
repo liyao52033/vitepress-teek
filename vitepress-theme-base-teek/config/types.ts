@@ -585,7 +585,7 @@ export interface Plugins {
    *
    * @default '{ permalinkPrefix: "pages", categories: true }'
    */
-  autoFrontmatterOption?: AutoFrontmatterOption & { permalinkPrefix?: string; categories?: boolean; coverImg?: boolean;};
+  autoFrontmatterOption?: AutoFrontmatterOption;
 }
 
 export interface LoginInfo {
