@@ -26,7 +26,7 @@ export function useLoginForm(imgCode: Ref<string>) {
     const validatePassword = (_rule: any, value: string, callback: (err?: Error) => void) => {
         if (!value) {
             callback(new Error('密码不能为空'))
-        } else if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(value)) {
+        } else if (!/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*_]{6,}$/.test(value)) {
             callback(new Error('密码需包含字母和数字，长度大于5位'))
         } else {
             callback()

@@ -7,11 +7,11 @@ import AutoFrontmatter, { FileInfo } from "vitepress-plugin-setfrontmatter";
 import SidebarPermalinkPlugin from 'vitepress-plugin-sidebar-permalink'
 import { UserConfig } from "vitepress";
 import { PluginOption } from "vite";
-import { transformData, transformRaw } from "post";
-import { Post, TkContentData } from "post/types";
+import { transformData, transformRaw } from "../post";
+import { Post, TkContentData } from "../post/types";
 import { codeArrowPlugin, imgCardPlugin, navCardPlugin, shareCardPlugin, todoPlugin } from "../markdown";
-import { containerPlugins, createContainersThenUse } from "markdown/plugins/container";
-import { createCategory, createCoverImg, createPermalink } from "utils";
+import { containerPlugins, createContainersThenUse } from "../markdown/plugins/container";
+import { createCategory, createCoverImg, createPermalink } from "../utils";
 
 export default function baseConfig(config: ThemeConfig ): UserConfig {
   const { vitePlugins, markdownPlugins = [], markdownContainers = [], containerLabel, ...tkThemeConfig } = config;

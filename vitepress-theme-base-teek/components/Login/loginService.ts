@@ -51,7 +51,7 @@ export const nodeLogin = async (
 ): Promise<LoginResult> => {
     try {
         const response = await axios({
-            url: '/coze/login',
+            url: loginInfo.apiUrl + "/login",
             method: 'POST',
             data: { username, password }, 
             headers: { 'Content-Type': 'application/json' }
@@ -88,8 +88,61 @@ export const nodeLogin = async (
     }
 };
 
+// Supabase登录接口实现
+const supabaseLogin = async (
+    username: string,
+    password: string,
+    loginInfo: LoginInfo
+) => { 
+    try {
+
+        // 调用后端登录接口
+        const response = await axios({
+            url: loginInfo.apiUrl + "/login",
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: { email: username, password }
+        });
+
+        const data = response.data;
+
+        // 处理响应结果
+        if (data && data.session) { 
+
+            return {
+                success: true,
+                message: "登录成功",
+                token: data.session.access_token
+            };
+        }
+
+        return {
+            success: false,
+            message: data?.error || "登录失败，未知错误"
+        };
+
+    } catch (error) { 
+        // 统一错误处理
+        if (axios.isAxiosError(error)) {
+            return {
+                success: false,
+                message: error.message || '登录请求失败，请检查网络'
+            };
+        }
+        return {
+            success: false,
+            message: '登录过程发生未知错误'
+        };
+    }
+}
+
+
+
 // 统一导出登录方法（方便后续扩展）
 export const loginService = {
     localLogin,
-    nodeLogin
+    nodeLogin,
+    supabaseLogin
 };

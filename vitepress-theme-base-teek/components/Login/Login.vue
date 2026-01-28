@@ -33,6 +33,7 @@ const {
   password =  "",
   token = "",
   expiration = 0.5,
+  apiUrl = "",
   type = "local"
 }: LoginInfo = { ...theme.loginInfo, ...frontmatter?.loginInfo };
 
@@ -71,11 +72,18 @@ async function login() {
     if (valid) {
       const redirect = redirectPath.value || "/";
       try {
-        const loginMethod = type === 'node' ? loginService.nodeLogin : loginService.localLogin;
+        let loginMethod;
+        if (type === 'supabase') {
+          loginMethod = loginService.supabaseLogin;
+        } else if (type === 'node') {
+          loginMethod = loginService.nodeLogin;
+        } else {
+          loginMethod = loginService.localLogin;
+        }
         const result = await loginMethod(
             formModel.username,
             formModel.password,
-            { username, password, token, expiration}
+            { username, password, apiUrl, token, expiration }
         );
 
         if (result.success) {

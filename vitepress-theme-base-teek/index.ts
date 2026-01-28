@@ -2,7 +2,7 @@ import DefaultTheme from 'vitepress/theme'
 import { inBrowser, Theme } from "vitepress";
 import MyLayout from "./layout"
 import Login from "./components/Login";
-import { checkAuth } from "./components/Login/helper.js";
+import { checkAuth, verifyAuth } from "./components/Login/helper.js";
 import Busuanzi from "./helper/busuanzi";
 import { NProgress } from 'nprogress-v2/dist/index.js' // 进度条组件
 import 'nprogress-v2/dist/index.css' // 进度条样式
@@ -36,7 +36,7 @@ export default {
             }
         }
 
-        let { isLogin, List } = siteData.value.themeConfig.loginInfo
+        let { isLogin, List, type, apiUrl } = siteData.value.themeConfig.loginInfo
 
         // 获取可能已有的 onAfterRouteChange
         const selfOnAfterRouteChange = router.onAfterRouteChange;
@@ -51,9 +51,19 @@ export default {
             }
         };
         const login = () => {
-            if (router.route.path !== '/' && router.route.path !== '/login') {
-                if ((isLogin || List.includes(router.route.path)) && !checkAuth()) {
-                    router.go(`/login?redirect=${ router.route.path }` || '/').then(r  => {})
+            if (router.route.path !== '/' && router.route.path !== '/login' ) {
+                if (List.includes(router.route.path) || isLogin) {
+                    if (type === 'supabase') {
+                        verifyAuth(apiUrl).then(valid => {
+                            if (!valid) {
+                                router.go(`/login?redirect=${ router.route.path }` || '/').then(r  => {})
+                            }
+                        })
+                    } else {
+                        if (!checkAuth()) {
+                            router.go(`/login?redirect=${ router.route.path }` || '/').then(r  => {})
+                        }
+                    }
                 }
             }
         }

@@ -1,8 +1,7 @@
 import { defineConfig } from 'vitepress'
-import { FileInfo } from "vitepress-plugin-setfrontmatter";
 import secureInfo from '../secureInfo'
 import { generatedSidebar, generatedRewrites } from 'vitepress-plugin-sidebar-permalink'
-import baseConfig, { createAuthor } from "vitepress-theme-base-teek/config";
+import baseConfig from "vitepress-theme-base-teek/config";
 import rewritesJson from '../rewrites.json' //插件自动生成
 import { FooterInfo } from "./footer"
 import { toSidebarNavItems, nav } from "./nav"
@@ -13,10 +12,12 @@ const tkConfig = baseConfig({
         createTime: "2025-03-08",
     },
     loginInfo: {
-        isLogin: false, // 是否开启全局登录
-        username: secureInfo.username, // 登录用户名
-        password: secureInfo.password, // 登录密码
-        expiration: 0.5,  // token过期时间，单位：天
+        isLogin: true, // 是否开启全局登录
+        // username: secureInfo.username, // 登录用户名
+        // password: secureInfo.password, // 登录密码
+        // expiration: 0.5,  // token过期时间，单位：天
+        type: "supabase", // 登录类型，local 本地登录，node 通过后端接口登录，supabase 使用 supabase 进行登录
+        apiUrl: "https://ssl.xiaoying.org.cn", // 当 type 为 supabase 时，使用该接口进行登录
     },
     articleTip: {
         articleTopTip: (frontmatter) => {

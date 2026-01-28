@@ -616,7 +616,11 @@ export interface LoginInfo {
   /**
    * 登录方式
    */
-  type?: 'node' | 'local';
+  type?: 'node' | 'local' | 'supabase';
+  /**
+   * 登录接口
+   */
+  apiUrl?: string;
 }
 
 

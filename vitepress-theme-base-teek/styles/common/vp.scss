@@ -5,6 +5,20 @@
   max-width: var(--vp-content-container, 688px);
 }
 
+/* 针对 1440px ~ 1920px 屏幕的适配 */
+@media (min-width: 1500px) and (max-width: 1919px) {
+  .VPContent .VPDoc.has-aside .content-container{
+    max-width: var(--vp-content-container, 900px);
+  }
+}
+
+/* 针对超大屏幕（如 ≥1920px）的额外优化 */
+@media (min-width: 1920px) {
+  .VPContent .VPDoc.has-aside .content-container {
+    max-width: var(--vp-content-container, 1000px);
+  }
+}
+
 .VPSidebar {
   .nav {
     .item {

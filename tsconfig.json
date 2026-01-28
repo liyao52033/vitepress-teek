@@ -2,9 +2,9 @@
     "compilerOptions": {
         "target": "ESNext",
         "module": "ESNext",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "declaration": true,
-        "baseUrl": ".",
+     //   "baseUrl": ".",
         "rootDir": ".",
         "outDir": "dist",
         "allowJs": true,

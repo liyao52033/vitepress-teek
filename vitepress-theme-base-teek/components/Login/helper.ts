@@ -52,6 +52,48 @@ export function checkAuth(): boolean {
   return false;
 }
 
+export async function verifyAuth(apiUrl: string) {
+  try {
+    // 1. 请求用户信息接口
+    const userRes = await fetch(apiUrl + '/getUser', {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (userRes.ok) {
+      const userResult = await userRes.json();
+
+      const isUserValid = userResult.user;
+      if (isUserValid) {
+        return true ;
+      }
+    }
+
+    // 2. 刷新Token
+    const refreshRes = await fetch(apiUrl + '/refresh', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    });
+    if (!refreshRes.ok) return false;
+    const refreshResult = await refreshRes.json();
+
+    // 3. 重试用户信息接口
+    if (refreshResult && refreshResult.token) {
+      const retryRes = await fetch(apiUrl + '/getUser', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      const retryResult = await retryRes.json();
+
+      return retryResult.user;
+    }
+
+  } catch (error) {
+    return false;
+  }
+}
+
 
 
 // 跳转到登录页时 url 可携带的参数
