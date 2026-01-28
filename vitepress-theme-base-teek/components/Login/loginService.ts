@@ -97,19 +97,22 @@ const supabaseLogin = async (
     try {
 
         // 调用后端登录接口
-        const response = await axios({
-            url: loginInfo.apiUrl + "/login",
+        const response = await fetch(loginInfo.apiUrl + "/login",{
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
-            data: { email: username, password }
+            body: JSON.stringify({
+                email: username,
+                password
+            }),
         });
 
-        const data = response.data;
+        const data = await response.json();
 
         // 处理响应结果
-        if (data && data.session) { 
+        if (response.ok && data.session) { 
 
             return {
                 success: true,
