@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="searchInstance">
         <!-- 搜索触发按钮 -->
         <button aria-label="Search" class="DocSearch DocSearch-Button" type="button" @click="toggleSearch">
             <span class="DocSearch-Button-Container">

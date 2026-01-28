@@ -3,18 +3,18 @@ import { defineConfig } from "vitepress";
 import { generatedRewrites, generatedSidebar } from "vitepress-plugin-sidebar-permalink";
 import baseConfig from "vitepress-theme-base-teek/config";
 import rewritesJson from "../rewrites.json";
-import secureInfo from "../secureInfo";
 import { FooterInfo } from "./footer";
 import { nav, toSidebarNavItems } from "./nav";
+import 'dotenv/config';
 
 const tkConfig = baseConfig({
     webSiteInfo: {
         createTime: "2025-03-08",
     },
     loginInfo: {
-        isLogin: false, // 是否开启全局登录
-        expiration: 0.5,  // token过期时间，单位：天,
-        type: 'node'
+        isLogin: true, // 是否开启全局登录
+        type: 'supabase',
+        apiUrl: "https://ssl.xiaoying.org.cn"
     },
     articleTip: {
         articleTopTip: (frontmatter) => {
@@ -118,14 +118,8 @@ export default defineConfig({
                     find: '@',
                     replacement: path.resolve(__dirname, '../') // 指向 docs
                 },
-                // {
-                //     find: /^.*\/VPAlgoliaSearchBox\.vue$/,
-                //     replacement: fileURLToPath(
-                //         new URL('./theme/components/AlgoliaSearch.vue', import.meta.url)
-                //     )
-                // }
             ]
-           
+
         }
     },
     rewrites: generatedRewrites,
@@ -146,7 +140,7 @@ export default defineConfig({
     cacheDir: '.vite-cache',
     metaChunk: true,
     sitemap: {
-        hostname: 'https://vp.xiaoying.org.cn/'
+        hostname: 'https://teek.xiaoying.org.cn/'
     },
     themeConfig: ({
         logo: '/img/logo.png',
@@ -162,21 +156,39 @@ export default defineConfig({
         //         }
         //     }
         // },
+
         // search: {
         //     provider: 'algolia',
         //     options: {
-        //         appId: secureInfo.appId,
-        //         apiKey: secureInfo.apiKey,
-        //         indexName: secureInfo.indexName
+        //         appId: process.env.VITE_ALGOLIA_APP_ID || '',
+        //         apiKey: process.env.VITE_ALGOLIA_API_KEY || '',
+        //         indexName: process.env.VITE_ALGOLIA_INDEX_NAME || '',
+        //         askAi:  {
+        //             indexName: "bog-md",
+        //             assistantId: process.env.VITE_ASSISTANT_ID || '',
+        //             searchParamters: {
+        //                 facetFilters: ['language:zh-CN'],
+        //             }
+        //         }
         //     }
         // },
+
         //@ts-ignore
-        meilisearch: {
-            host: "https://vp.xiaoying.org.cn", // 服务地址（自建或云服务）
-            apiKey: secureInfo.searchKey, // 搜索密钥（非管理员密钥）
-            indexName: "teek", // 索引名称
-            placeholder: "搜索文档..." // 搜索框提示文字
+        // meilisearch: {
+        //     host: "https://vp.xiaoying.org.cn", // 服务地址（自建或云服务）
+        //     apiKey: secureInfo.searchKey, // 搜索密钥（非管理员密钥）
+        //     indexName: "teek", // 索引名称
+        //     placeholder: "搜索文档..." // 搜索框提示文字
+        // },
+
+        algoliaSearch: {
+            appId: process.env.VITE_ALGOLIA_APP_ID || '',
+            apiKey: process.env.VITE_ALGOLIA_API_KEY || '',
+            indexName: process.env.VITE_ALGOLIA_INDEX_NAME || '',
+            assistantId: process.env.VITE_ASSISTANT_ID || ''
         },
+
+
         outline: {
             level: [2, 3],
             label: "页面导航",
@@ -195,3 +207,4 @@ export default defineConfig({
         }
     })
 })
+

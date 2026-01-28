@@ -4,17 +4,20 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "ins": "pnpm install --fix-peer-deps && pnpm dedupe"
+    "ins": "pnpm install --fix-peer-deps && pnpm dedupe",
+    "deploy": "pnpm run docs:build && edgeone pages deploy ./docs/.vitepress/dist -n vitepress-teek"
   },
   "devDependencies": {
-    "@docsearch/js": "^4.0.0-beta.8",
+    "@docsearch/css": "^4.5.3",
+    "@docsearch/js": "^4.5.2",
     "@meilisearch/instant-meilisearch": "^0.27.0",
     "@types/node": "^24.3.0",
+    "dotenv": "^17.2.3",
     "element-plus": "^2.10.6",
-    "instantsearch.js": "^4.79.2",
+    "instantsearch.js": "^4.86.1",
     "vitepress": "^1.6.4",
     "vitepress-plugin-sidebar-permalink": "^1.6.0",
-    "vitepress-theme-base-teek": "^1.4.7",
+    "vitepress-theme-base-teek": "^1.5.0",
     "vue": "^3.5.18"
   },
   "dependencies": {
