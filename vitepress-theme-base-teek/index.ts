@@ -1,8 +1,7 @@
 import DefaultTheme from 'vitepress/theme'
 import { inBrowser, Theme } from "vitepress";
 import MyLayout from "./layout"
-import Login from "./components/Login";
-import { checkAuth, verifyAuth } from "./components/Login/helper.js";
+import Login, { checkAuth, verifyAuth } from "./components/Login";
 import Busuanzi from "./helper/busuanzi";
 import { NProgress } from 'nprogress-v2/dist/index.js' // 进度条组件
 import 'nprogress-v2/dist/index.css' // 进度条样式

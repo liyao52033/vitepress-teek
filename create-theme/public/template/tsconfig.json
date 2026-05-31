@@ -6,7 +6,7 @@
     "noUnusedLocals": true,
     "resolveJsonModule": true,
     "rootDir": ".",
-    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "outDir": "./dist",
     "target": "ESNext",
     "module": "ESNext",
@@ -18,5 +18,9 @@
       "DOM.Iterable"
     ]
   },
-  "include": [".",  "**/*.ts", "**/*.mts" ]
+  "include": [
+    ".",
+    "**/*.ts",
+    "**/*.mts"
+  ]
 }

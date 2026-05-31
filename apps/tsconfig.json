@@ -8,7 +8,7 @@
     "resolveJsonModule": true,
     "rootDir": ".",
     "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
+ //   "baseUrl": ".",
     "outDir": "./dist",
     "target": "ESNext",
     "module": "ESNext",

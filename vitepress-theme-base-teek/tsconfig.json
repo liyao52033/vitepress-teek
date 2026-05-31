@@ -6,8 +6,8 @@
         "noUnusedLocals": true,
         "resolveJsonModule": true,
         "rootDir": ".",
-      //  "ignoreDeprecations": "6.0",
-     //   "baseUrl": ".",
+        "ignoreDeprecations": "6.0",
+        //   "baseUrl": ".",
         "outDir": "./dist",
         "target": "ESNext",
         "module": "ESNext",
@@ -22,5 +22,10 @@
             "vite/client"
         ]
     },
-    "include": [".",  "**/*.ts", "**/*.mts", "**/*.d.ts"]
+    "include": [
+        ".",
+        "**/*.ts",
+        "**/*.mts",
+        "**/*.d.ts"
+    ]
 }

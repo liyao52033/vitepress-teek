@@ -12,7 +12,7 @@ const tkConfig = baseConfig({
         createTime: "2025-03-08",
     },
     loginInfo: {
-        isLogin: true, // 是否开启全局登录
+        isLogin: false, // 是否开启全局登录
         // username: secureInfo.username, // 登录用户名
         // password: secureInfo.password, // 登录密码
         // expiration: 0.5,  // token过期时间，单位：天

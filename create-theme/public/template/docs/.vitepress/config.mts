@@ -12,9 +12,12 @@ const tkConfig = baseConfig({
         createTime: "2025-03-08",
     },
     loginInfo: {
-        isLogin: false, // 是否开启全局登录
-        token: Math.random().toString(32).slice(2) + Math.round(new Date().getTime() / 1000),
-        expiration: 0.5,  // token过期时间，单位：天
+        isLogin: true, // 是否开启全局登录
+        // username: secureInfo.username, // 登录用户名
+        // password: secureInfo.password, // 登录密码
+        // expiration: 0.5,  // token过期时间，单位：天
+        type: "supabase", // 登录类型，local 本地登录，node 通过后端接口登录，supabase 使用 supabase 进行登录
+        apiUrl: "https://ssl.xiaoying.org.cn", // 当 type 为 supabase 时，使用该接口进行登录
     },
     articleTip: {
         articleTopTip: (frontmatter) => {
