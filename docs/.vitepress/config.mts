@@ -12,26 +12,26 @@ const tkConfig = baseConfig({
         createTime: "2025-03-08",
     },
     loginInfo: {
-        isLogin: true, // 是否开启全局登录
+        isLogin: false, // 是否开启全局登录
         type: 'supabase',
         apiUrl: "https://ssl.xiaoying.org.cn"
     },
-    articleTip: {
-        articleTopTip: (frontmatter) => {
-            const tip: Record<string, string> = {
-                type: "warning",
-                text: "文章发布已超过一年，内容可能过时，阅读注意甄别。",
-            };
+    // articleTip: {
+    //     articleTopTip: (frontmatter) => {
+    //         const tip: Record<string, string> = {
+    //             type: "warning",
+    //             text: "文章发布已超过一年，内容可能过时，阅读注意甄别。",
+    //         };
 
-            // 大于一年，添加提示
-            const longTime = 12 * 30 * 24 * 60 * 60 * 1000;
-            if (
-                frontmatter.date &&
-                Date.now() - new Date(frontmatter.date).getTime() > longTime
-            )
-                return tip;
-        },
-    },
+    //         // 大于一年，添加提示
+    //         const longTime = 12 * 30 * 24 * 60 * 60 * 1000;
+    //         if (
+    //             frontmatter.date &&
+    //             Date.now() - new Date(frontmatter.date).getTime() > longTime
+    //         )
+    //             return tip;
+    //     },
+    // },
     footerInfo: FooterInfo,
     vitePlugins: {
         autoFrontmatterOption: {

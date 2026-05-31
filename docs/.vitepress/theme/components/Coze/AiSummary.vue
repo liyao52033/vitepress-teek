@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { useRoute } from "vitepress";
+import { useRoute, useData } from "vitepress";
 //@ts-ignore
 import secureInfo from "@/secureInfo";
 
 const route = useRoute();
+const { frontmatter } = useData();
 
 const summary = ref("");
 const progress = ref(0);
@@ -62,7 +63,7 @@ const resetState = () => {
 const closeES = () => {
   if (es) {
     try { es.close(); }
-    catch {}
+    catch { }
     es = null;
   }
 };
@@ -78,10 +79,25 @@ const start = () => {
 
   closeES();
   resetState();
+
+  // 优先从frontmatter获取description
+  const frontmatterDesc = frontmatter.value?.description;
+  if (frontmatterDesc && typeof frontmatterDesc === "string" && frontmatterDesc.trim().length > 0) {
+    // 将frontmatter中的description加入buffer，使用打字机效果显示
+    loading.value = true;
+    buffer.push(frontmatterDesc.trim());
+    consumeLoop().then(() => {
+      error.value = "";
+      finish();
+    });
+    return;
+  }
+
+  // 如果frontmatter中没有description，则调用AI摘要API
   loading.value = true;
 
   const currentUrl = new URL(route.path, secureInfo.baseURL).toString();
-  es = new EventSource(`/coze/summary?url=${ encodeURIComponent(currentUrl) }`);
+  es = new EventSource(`/coze/summary?url=${encodeURIComponent(currentUrl)}`);
 
   let firstMessageReceived = false;
 
@@ -138,10 +154,10 @@ onMounted(() => {
   start();
 });
 watch(
-    () => route.path,
-    () => {
-      if (mounted && route.path.startsWith("/pages/")) start()
-    }
+  () => route.path,
+  () => {
+    if (mounted && route.path.startsWith("/pages/")) start()
+  }
 );
 onBeforeUnmount(() => closeES());
 </script>
@@ -187,7 +203,6 @@ onBeforeUnmount(() => closeES());
 </template>
 
 <style scoped>
-
 .icon {
   width: 1em;
   height: 1em;
@@ -274,6 +289,7 @@ onBeforeUnmount(() => closeES());
   0% {
     left: -40%;
   }
+
   100% {
     left: 100%;
   }
@@ -318,12 +334,14 @@ onBeforeUnmount(() => closeES());
 }
 
 @keyframes caretBlink {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0;
   }
+
   50% {
     opacity: 1;
   }
 }
 </style>
-

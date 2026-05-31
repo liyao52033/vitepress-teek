@@ -12,7 +12,7 @@ export default {
     extends: Theme,
     Layout() {
         return h(Theme.Layout, null, {
-            'liyao-layout-bottom': () => h(Coze) ,
+          //  'liyao-layout-bottom': () => h(Coze) ,
             'liyao-doc-before': () => h(AiSummary),
             "home-card-after": () => h(WelcomeCard),
             "nav-bar-content-before": () => h(AlgoliaSearch, Meilisearch),

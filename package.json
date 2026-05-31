@@ -8,19 +8,20 @@
     "deploy": "pnpm run docs:build && edgeone pages deploy ./docs/.vitepress/dist -n vitepress-teek"
   },
   "devDependencies": {
-    "@docsearch/css": "^4.5.3",
-    "@docsearch/js": "^4.5.2",
-    "@meilisearch/instant-meilisearch": "^0.27.0",
-    "@types/node": "^24.3.0",
-    "dotenv": "^17.2.3",
-    "element-plus": "^2.10.6",
-    "instantsearch.js": "^4.86.1",
+    "@docsearch/css": "^4.6.3",
+    "@docsearch/js": "^4.6.3",
+    "@meilisearch/instant-meilisearch": "^0.31.1",
+    "@types/node": "^25.9.1",
+    "dotenv": "^17.4.2",
+    "element-plus": "^2.14.1",
+    "instantsearch.js": "^4.99.0",
+    "meilisearch": "^0.58.0",
     "vitepress": "^1.6.4",
     "vitepress-plugin-sidebar-permalink": "^1.6.0",
-    "vitepress-theme-base-teek": "^1.5.0",
-    "vue": "^3.5.18"
+    "vitepress-theme-base-teek": "^1.5.1",
+    "vue": "^3.5.35"
   },
   "dependencies": {
-    "axios": "^1.11.0"
+    "axios": "^1.16.1"
   }
 }
